@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lumii AI - Wireframes Overview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 24px;
+    }
+    h1 {
+      text-align: center;
+      color: #2d3748;
+      margin-bottom: 35px;
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+    .wireframe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 34px;
+      margin-bottom: 40px;
+      justify-items: center;
+    }
+    .phone-frame {
+      background: #fff;
+      border-radius: 25px;
+      padding: 14px 0 14px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.09);
+      border: 3px solid #e2e8f0;
+      width: 320px;
+      height: 610px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      position: relative;
+    }
+    .screen {
+      background: #fff;
+      border-radius: 15px;
+      height: 100%;
+      padding: 20px 18px 14px 18px;
+      border: 2px solid #cbd5e0;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .screen-title {
+      font-weight: bold;
+      font-size: 17px;
+      color: #2d3748;
+      margin-bottom: 15px;
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e2e8f0;
+      background: #fff;
+      border-radius: 0 0 10px 10px;
+    }
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .card {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 13px 13px 13px;
+      margin-bottom: 12px;
+    }
+    .btn, button.btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 11px 0;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      margin: 6px 0;
+      width: 100%;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #e2e8f0 !important;
+      color: #4a5568 !important;
+      border: 2px solid #cbd5e0;
+    }
+    .input-field {
+      width: 100%; padding: 11px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px; margin: 7px 0; font-size: 15px;
+      background: #fff;
+    }
+    .avatar-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 10px; margin: 18px 0;
+    }
+    .avatar-option {
+      text-align: center; padding: 9px 3px;
+      border-radius: 10px; border: 2px solid #e2e8f0;
+      background: #f7fafc;
+      user-select: none;
+    }
+    .avatar-circle {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #fff; border: 2px solid #e2e8f0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px; margin: 0 auto 6px;
+    }
+    .avatar-name { font-size: 11px; font-weight: bold; color: #4a5568;}
+    .weekly-grid {
+      display: flex; flex-direction: column; gap: 8px; margin: 10px 0;
+    }
+    .day-card {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 7px;
+    }
+    .day-card.completed { background: #c6f6d5; border-color: #9ae6b4;}
+    .day-card.today { background: #bee3f8; border-color: #63b3ed;}
+    .day-card.weekend { background: #fbb6ce; border-color: #f687b3;}
+    .day-header {display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0;}
+    .day-name { font-weight: bold; font-size: 11px; color: #2d3748; }
+    .day-status { font-size: 13px;}
+    .activity-item {
+      font-size: 9px; padding: 3px 7px;
+      border-radius: 6px; background: #fff; border: 1px solid #e2e8f0;
+      display: inline-block; margin: 1px 0;
+    }
+    .activity-item.done { background: #c6f6d5; border-color: #9ae6b4; text-decoration: line-through; color: #2f855a; }
+    .activity-item.current { background: #fef5e7; border-color: #f6ad55; color: #744210; font-weight: bold;}
+    .activity-item.pending { color: #718096;}
+    .bottom-nav {
+      position: absolute;
+      left: 12px; right: 12px; bottom: 10px;
+      height: 48px;
+      background: #f7fafc;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 10;
+    }
+    .nav-item {
+      width: 39px; height: 33px;
+      background: #e2e8f0;
+      border-radius: 7px;
+      border: 1px solid #cbd5e0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 10px; color: #4a5568;
+      user-select: none;
+      margin: 0 1px;
+    }
+    .nav-item.active { background: #667eea; color: white; }
+    .lumii-logo-main {
+      width: 76px; height: 76px;
+      margin: 0 auto 16px auto;
+      border-radius: 50%;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      font-weight: 700;
+      letter-spacing: 1px;
+      border: 4px solid #ebe7fc;
+      box-shadow: 0 4px 12px #764ba233;
+    }
+    .progress-bar {
+      width: 100%; height: 7px; background: #e2e8f0;
+      border-radius: 4px; margin: 8px 0; border: 1px solid #cbd5e0;
+    }
+    .progress-fill { height: 100%; background: #48bb78; border-radius: 4px;}
+    .mood-selector { display: flex; justify-content: space-between; margin: 8px 0;}
+    .mood-option {
+      width: 30px; height: 30px; border-radius: 50%; border: 2px solid #e2e8f0;
+      background: #f7fafc; display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+    .chart-placeholder {
+      width: 100%; height: 40px;
+      background: #f7fafc;
+      border: 2px dashed #e2e8f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #718096;
+      margin: 10px 0;
+    }
+    .hangman-word {
+      font-size: 1.5rem; letter-spacing: 7px; margin-bottom: 9px;text-align:center;
+    }
+    .hangman-letters {
+      margin-bottom: 10px;
+    }
+    .hangman-letter-btn {
+      display: inline-block; min-width:21px; min-height:21px;
+      margin: 1px 2px; font-size: 13px; border-radius: 4px;
+      background: #e2e8f0; color: #2d3748; border: 1px solid #cbd5e0;
+      cursor: pointer; font-weight: bold;
+      margin-bottom: 2px;
+    }
+    .hangman-letter-btn:disabled { background: #fbb6ce; color: #aaa; cursor: not-allowed;}
+    .floating-avatar {
+      position: absolute;
+      right: 10px;
+      bottom: 58px;
+      width: 38px; height: 38px; border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.13);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px;
+      border: 2px solid #667eea;
+      z-index: 100;
+    }
+    @media (max-width: 350px) {
+      .phone-frame { width: 98vw; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎓 Lumii AI - All Steps Overview</h1>
+  <div class="wireframe-grid">
+    <!-- 1. Role Selector -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">Who is using Lumii?</div>
+        <div style="display:flex;justify-content:center;gap:30px;margin:40px 0;">
+          <div style="text-align:center;">
+            <div style="font-size:44px;">👨‍👩‍👧‍👦</div>
+            <div style="font-weight:bold;margin-top:8px;">Parent</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:44px;">🧒</div>
+            <div style="font-weight:bold;margin-top:8px;">Kid</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 2. Welcome with Logo -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="content-area" style="align-items:center;justify-content:center;flex:1;">
+          <div class="lumii-logo-main">Lumii</div>
+          <h2 style="color:#2d3748;margin-bottom:10px;text-align:center;">Welcome to Lumii!</h2>
+          <div style="color:#718096;font-size:13px;margin-bottom:24px;text-align:center;">Your AI learning companion</div>
+          <button class="btn">Get Started</button>
+        </div>
+      </div>
+    </div>
+    <!-- 3. Name/Grade Entry -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">Let's get to know you!</div>
+        <div class="content-area">
+          <div class="card">
+            <div class="card-title">What's your name?</div>
+            <input type="text" class="input-field" placeholder="Enter your name">
+          </div>
+          <div class="card">
+            <div class="card-title">What grade are you in?</div>
+            <select class="input-field">
+              <option>Select grade level</option>
+              <option>Kindergarten</option>
+              <option>Year 1</option>
+              <option>Year 2</option>
+              <option>Year 3</option>
+              <option>Year 4</option>
+              <option>Year 5</option>
+            </select>
+          </div>
+          <button class="btn">Next: Choose Your Avatar</button>
+        </div>
+      </div>
+    </div>
+    <!-- 4. Avatar Selection -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">Choose Your Avatar</div>
+        <div class="content-area">
+          <div style="text-align:center;margin:14px 0;">
+            <h2 style="color:#2d3748;margin-bottom:7px;">Pick your learning buddy!</h2>
+            <p style="color:#718096;font-size:11px;margin-bottom:13px;">You can change this anytime</p>
+          </div>
+          <div class="avatar-grid">
+            <div class="avatar-option">
+              <div class="avatar-circle">🦸‍♀️</div>
+              <div class="avatar-name">Hero</div>
+            </div>
+            <div class="avatar-option">
+              <div class="avatar-circle">🐱</div>
+              <div class="avatar-name">Kitty</div>
+            </div>
+            <div class="avatar-option">
+              <div class="avatar-circle">🚀</div>
+              <div class="avatar-name">Space</div>
+            </div>
+            <div class="avatar-option">
+              <div class="avatar-circle">🌈</div>
+              <div class="avatar-name">Rainbow</div>
+            </div>
+            <div class="avatar-option">
+              <div class="avatar-circle">🦄</div>
+              <div class="avatar-name">Unicorn</div>
+            </div>
+            <div class="avatar-option">
+              <div class="avatar-circle">🐉</div>
+              <div class="avatar-name">Dragon</div>
+            </div>
+          </div>
+          <div class="card" style="background:#e6fffa;border-color:#4fd1c7;text-align:center;">
+            <div style="font-size:28px;margin-bottom:9px;">🦸‍♀️</div>
+            <div style="font-weight:bold;color:#2c7a7b;">You chose Hero!</div>
+            <div style="font-size:9px;color:#2c7a7b;margin-top:4px;">Ready to learn and grow strong!</div>
+          </div>
+          <button class="btn">Let's Start Learning!</button>
+        </div>
+      </div>
+    </div>
+    <!-- 5. Home Dashboard -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">Home</div>
+        <div class="content-area">
+          <div class="card card-large" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;">
+            <div>
+              <div style="font-weight:bold;margin-bottom:4px;">Today's Goal</div>
+              <div style="font-size:9px;opacity:.9;">Complete 3 lessons</div>
+              <div class="progress-bar" style="background:rgba(255,255,255,0.3);">
+                <div class="progress-fill" style="background:white;width:33%;"></div>
+              </div>
+            </div>
+            <div style="font-size:16px;">🎯</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Quick Actions</div>
+            <button class="btn">🧠 Take Curriculum Assessment</button>
+            <button class="btn btn-secondary">💬 Chat with Lumii AI</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Subjects</div>
+            <div style="display:flex;gap:10px;">
+              <div class="btn btn-secondary">Math</div>
+              <div class="btn btn-secondary">Geography</div>
+              <div class="btn btn-secondary">Spelling</div>
+              <div class="btn btn-secondary">Wellbeing</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">My Weekly Plan</div>
+            <div class="weekly-grid">
+              <div class="day-card completed">
+                <div class="day-header"><span class="day-name">MON</span><span class="day-status">✅</span></div>
+                <div class="activity-item done">Math: Fractions</div>
+                <div class="activity-item done">Spelling Quiz</div>
+              </div>
+              <div class="day-card today">
+                <div class="day-header"><span class="day-name">TUE</span><span class="day-status">📍</span></div>
+                <div class="activity-item done">Geography: Continents</div>
+                <div class="activity-item current">Math: Word Problems</div>
+              </div>
+              <div class="day-card">
+                <div class="day-header"><span class="day-name">WED</span><span class="day-status">⏳</span></div>
+                <div class="activity-item pending">Science: Plants</div>
+                <div class="activity-item pending">Reading: Story time</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item active">Home</div>
+          <div class="nav-item">Learn</div>
+          <div class="nav-item">Wellbeing</div>
+          <div class="nav-item">Progress</div>
+        </div>
+        <div class="floating-avatar">🦸‍♀️</div>
+      </div>
+    </div>
+    <!-- 6. Gap Analysis -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">📊 Gap Analysis</div>
+        <div class="content-area">
+          <div class="card" style="text-align:center;background:#edf2f7;">
+            <div style="font-weight:bold;margin-bottom:7px;">Assessment Results</div>
+            <div style="font-size:9px;color:#718096;margin-bottom:11px;">Based on your recent performance</div>
+            <div style="margin:10px 0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0;">
+                <span style="font-size:10px;">Fractions</span>
+                <div style="width:60%;background:#e2e8f0;height:4px;border-radius:3px;">
+                  <div style="width:30%;height:100%;background:#f56565;border-radius:3px;"></div>
+                </div>
+                <span style="font-size:9px;color:#e53e3e;">Needs Work</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0;">
+                <span style="font-size:10px;">Multiplication</span>
+                <div style="width:60%;background:#e2e8f0;height:4px;border-radius:3px;">
+                  <div style="width:70%;height:100%;background:#ed8936;border-radius:3px;"></div>
+                </div>
+                <span style="font-size:9px;color:#dd6b20;">Improving</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📚 Recommended Focus Areas</div>
+            <div style="margin:6px 0;background:#fed7d7;padding:5px 7px;border-radius:7px;">
+              <span style="color:#c53030;font-weight:bold;">Fractions Basics</span> – Start with simple fractions
+            </div>
+            <div style="margin:6px 0;background:#feebc8;padding:5px 7px;border-radius:7px;">
+              <span style="color:#b7791f;font-weight:bold;">Times Tables</span> – Practice 6-9 multiplication
+            </div>
+          </div>
+          <button class="btn">Start Personalized Learning Path</button>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item">Home</div>
+          <div class="nav-item active">Learn</div>
+          <div class="nav-item">Wellbeing</div>
+          <div class="nav-item">Progress</div>
+        </div>
+        <div class="floating-avatar">🦸‍♀️</div>
+      </div>
+    </div>
+    <!-- 7. Tutor (Math example) -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">🤖 AI Tutor - Math</div>
+        <div class="content-area">
+          <div class="card">
+            <div style="font-size:10px;">Lumii AI: Hi! Let's work on fractions today. What is 1/2 + 1/4?</div>
+          </div>
+          <div class="card" style="background:#667eea;color:white;">I think it's 2/6?</div>
+          <div class="card">
+            <div style="font-size:10px;">Lumii AI: Good try! Let me show you another way.</div>
+            <div style="background:white;border:2px solid #e2e8f0;border-radius:8px;padding:5px;text-align:center;">
+              🍕 What if we had 4 equal pizza slices?
+            </div>
+          </div>
+          <div class="card" style="background:#fef5e7;">Lumii AI: Let's take a breathing break?</div>
+          <button class="btn" style="background:#48bb78;">Yes, let's breathe!</button>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item">Home</div>
+          <div class="nav-item active">Learn</div>
+          <div class="nav-item">Wellbeing</div>
+          <div class="nav-item">Progress</div>
+        </div>
+        <div class="floating-avatar">🦸‍♀️</div>
+      </div>
+    </div>
+    <!-- 8. Wellbeing Check-in -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">💙 Wellbeing Check-in</div>
+        <div class="content-area">
+          <div class="card" style="text-align:center;">
+            <div style="font-weight:bold;margin-bottom:10px;">How are you feeling today?</div>
+            <div class="mood-selector">
+              <div class="mood-option">😢</div>
+              <div class="mood-option">😕</div>
+              <div class="mood-option">😊</div>
+              <div class="mood-option">😄</div>
+              <div class="mood-option">🤩</div>
+            </div>
+            <div style="font-size:9px;color:#718096;margin-top:8px;">Tap to select your mood</div>
+          </div>
+          <div class="card">
+            <div style="font-weight:bold;margin-bottom:7px;">Energy Level</div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:75%;background:#ed8936;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:8px;color:#718096;margin-top:3px;">
+              <span>Low</span><span>High</span>
+            </div>
+          </div>
+          <div class="card" style="background:#e6fffa;">
+            <div style="font-weight:bold;margin-bottom:3px;">🌸 Take a Breathing Break</div>
+            <button class="btn" style="background:#319795;">Start 2-Minute Exercise</button>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item">Home</div>
+          <div class="nav-item">Learn</div>
+          <div class="nav-item active">Wellbeing</div>
+          <div class="nav-item">Progress</div>
+        </div>
+      </div>
+    </div>
+    <!-- 9. Breathing Exercise -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">🌸 Breathing Exercise</div>
+        <div class="content-area" style="align-items:center;justify-content:center;">
+          <div style="width:90px;height:90px;border-radius:50%;border:3px solid #667eea;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:13px;color:#4a5568;text-align:center;margin:10px 0 14px 0;">
+            Breathe in...<br>Breathe out...
+          </div>
+          <div style="font-size:13px;font-weight:bold;color:#2d3748;margin-bottom:7px;text-align:center;">
+            Let's relax for 2 minutes!
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 10. Spelling Game (Hangman) -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">Spelling Game</div>
+        <div class="content-area" style="text-align:center;">
+          <div style="font-size:13px;color:#667eea;margin-bottom:7px;font-weight:bold;">Guess the word!</div>
+          <div style="font-family:monospace;font-size:13px;min-height:48px;">
+            <pre>
+ _______
+ |     |
+ |     O
+ |    /|\
+ |    / \
+_|_
+            </pre>
+          </div>
+          <div class="hangman-word">S _ _ L L _ _ _</div>
+          <div class="hangman-letters">
+            <button class="hangman-letter-btn" disabled>S</button>
+            <button class="hangman-letter-btn" >P</button>
+            <button class="hangman-letter-btn" disabled>L</button>
+            <button class="hangman-letter-btn" >E</button>
+            <button class="hangman-letter-btn" >I</button>
+            <button class="hangman-letter-btn" >N</button>
+            <button class="hangman-letter-btn" >G</button>
+          </div>
+          <div style="font-size:12px;margin-top:8px;color:#718096;">Guess the missing letters of "SPELLING"</div>
+        </div>
+      </div>
+    </div>
+    <!-- 11. Parent Dashboard (overview) -->
+    <div class="phone-frame">
+      <div class="screen">
+        <div class="screen-title">Parent Dashboard</div>
+        <div class="content-area">
+          <div class="card">
+            <div class="card-title">Weekly Progress</div>
+            <div class="chart-placeholder">[Weekly Progress Chart Placeholder]</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Learning Suggestions</div>
+            <ul style="font-size:11px;">
+              <li>Review multiplication tables</li>
+              <li>Encourage daily reading</li>
+              <li>Check homework completion</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title">Wellbeing Suggestions</div>
+            <ul style="font-size:11px;">
+              <li>Ask how they're feeling after school</li>
+              <li>Practice a 2-min breathing break together</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title">Important Dates</div>
+            <ul style="font-size:11px;">
+              <li>Math Test: June 21</li>
+              <li>Science Project Due: June 28</li>
+            </ul>
+          </div>
+          <button class="btn" style="margin-top:6px;">Upload Materials</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
