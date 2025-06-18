@@ -98,12 +98,27 @@
       border: 2px solid #cbd5e0;
     }
     .input-field {
-      width: 100%; padding: 12px;
+      width: 100%; 
+      padding: 12px;
       border: 2px solid #e2e8f0;
-      border-radius: 8px; margin: 8px 0; font-size: 17px;
+      border-radius: 8px; 
+      margin: 2px 0 14px 0; 
+      font-size: 17px;
       background: #fff;
+      box-sizing: border-box;
+      display: block;
+      outline: none;
     }
     .input-field:focus { outline: 2px solid #667eea; }
+    .input-label {
+      font-size: 16px;
+      margin-bottom: 3px;
+      color: #2d3748;
+      font-weight: 500;
+      display: block;
+      text-align: left;
+      margin-left: 2px;
+    }
     /* Avatar grid */
     .avatar-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 20px 0; }
     .avatar-option {
@@ -257,12 +272,85 @@
       margin-top: 12px;
       justify-content: center;
     }
+    .upload-options-grid {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin: 24px 0;
+    }
+    .upload-option-btn {
+      background: #e2e8f0;
+      color: #4a5568;
+      border: 2px solid #cbd5e0;
+      border-radius: 14px;
+      padding: 18px 22px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 8px;
+      width: 135px;
+      transition: background 0.13s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .upload-option-btn:active {
+      background: #667eea;
+      color: #fff;
+      border-color: #667eea;
+    }
+    .flag-match-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    .flag-row, .country-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 6px;
+    }
+    .flag-btn, .country-btn {
+      background: #e2e8f0;
+      color: #2d3748;
+      border: 2px solid #cbd5e0;
+      border-radius: 10px;
+      padding: 13px 10px;
+      font-size: 26px;
+      cursor: pointer;
+      min-width: 54px;
+      min-height: 54px;
+      transition: background .12s;
+    }
+    .flag-btn.selected, .country-btn.selected {
+      background: #667eea;
+      color: #fff;
+      border-color: #667eea;
+    }
+    .flag-match-title {
+      font-size: 19px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #2d3748;
+    }
+    .flag-match-result {
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 8px;
+      min-height: 24px;
+      color: #22543d;
+    }
     @media (max-width: 430px) {
       .container { border-radius:0; }
       .card { padding: 11px 6px 12px 6px; }
       .bottom-nav { left: 2vw; right: 2vw; }
       .content-area { padding: 14px 2vw 10px 2vw;}
       .floating-avatar { right:8px; }
+      .upload-options-grid { gap: 8px;}
     }
   </style>
 </head>
@@ -317,11 +405,11 @@
       </div>
       <div class="parent-section-title">Resources</div>
       <div class="parent-card" onclick="showScreen('screen-parent-resources')">
-        <div>🔗 <span class="parent-link">Khan Academy Math</span></div>
         <div>🔗 <span class="parent-link">Free Storybooks</span></div>
+        <div>🔗 <span class="parent-link">Find Live Tutor</span></div>
       </div>
       <div class="parent-btn-row">
-        <button class="btn" style="width:48%;">Upload Materials</button>
+        <button class="btn" style="width:48%;" id="btn-upload-parent">Upload Materials</button>
         <button class="btn btn-secondary" style="width:48%;" onclick="showScreen('screen-role')">Back</button>
       </div>
     </div>
@@ -409,11 +497,31 @@
     <div class="screen-title">Parent Resources</div>
     <div class="content-area">
       <div class="parent-detail-section">
-        <div>🔗 <a href="https://www.khanacademy.org/math" target="_blank" style="color:#667eea;">Khan Academy Math</a></div>
         <div>🔗 <a href="https://www.storyberries.com/" target="_blank" style="color:#667eea;">Free Storybooks</a></div>
-        <div>🔗 <a href="https://www.childline.org.uk/toolbox/calm-zone/" target="_blank" style="color:#667eea;">Calm Zone (for kids)</a></div>
+        <div>🔗 <a href="https://preply.com/en/" target="_blank" style="color:#667eea;">Find Live Tutor</a></div>
       </div>
       <div class="parent-btn-row">
+        <button class="btn btn-secondary" onclick="showScreen('screen-parent')">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parent Upload Page -->
+  <div id="screen-parent-upload" class="screen">
+    <div class="screen-title">Upload Materials</div>
+    <div class="content-area" style="align-items:center;justify-content:center;flex:1;">
+      <div class="flag-match-title" style="margin-bottom:22px;">Choose how to upload:</div>
+      <div class="upload-options-grid">
+        <button class="upload-option-btn" onclick="alert('Camera not connected in prototype!')">
+          <span style="font-size:32px;">📷</span>
+          <span>Take Photo</span>
+        </button>
+        <button class="upload-option-btn" onclick="alert('File picker not enabled in prototype!')">
+          <span style="font-size:32px;">🗂️</span>
+          <span>Upload from Computer/Phone</span>
+        </button>
+      </div>
+      <div class="parent-btn-row" style="margin-top:18px;">
         <button class="btn btn-secondary" onclick="showScreen('screen-parent')">Back</button>
       </div>
     </div>
@@ -434,26 +542,22 @@
   <div id="screen-kid-onboarding" class="screen">
     <div class="screen-title">Let's get to know you!</div>
     <div class="content-area" style="align-items:center;justify-content:center;flex:1;">
-      <div class="card">
-        <div class="card-title">What's your name?</div>
-        <input type="text" class="input-field" id="input-name" placeholder="Enter your name">
-      </div>
-      <div class="card">
-        <div class="card-title">What grade are you in?</div>
-        <select class="input-field" id="input-grade">
-          <option value="">Select grade level</option>
-          <option>Kindergarten</option>
-          <option>Year 1</option>
-          <option>Year 2</option>
-          <option>Year 3</option>
-          <option>Year 4</option>
-          <option>Year 5</option>
-          <option>Year 6</option>
-          <option>Year 7</option>
-          <option>Year 8</option>
-          <option>Year 9</option>
-        </select>
-      </div>
+      <label class="input-label" for="input-name">What's your name?</label>
+      <input type="text" class="input-field" id="input-name" placeholder="Enter your name" autocomplete="off">
+      <label class="input-label" for="input-grade">What grade are you in?</label>
+      <select class="input-field" id="input-grade">
+        <option value="">Select grade level</option>
+        <option>Kindergarten</option>
+        <option>Year 1</option>
+        <option>Year 2</option>
+        <option>Year 3</option>
+        <option>Year 4</option>
+        <option>Year 5</option>
+        <option>Year 6</option>
+        <option>Year 7</option>
+        <option>Year 8</option>
+        <option>Year 9</option>
+      </select>
       <button class="btn" id="btn-next-onboarding">Next: Choose Avatar</button>
       <button class="btn btn-secondary" onclick="showScreen('screen-kid-welcome')">Back</button>
     </div>
@@ -504,6 +608,7 @@
         <div class="card-title">Subjects</div>
         <div style="display:flex;gap:12px;">
           <div class="btn btn-secondary subject-btn" data-subject="math">Math</div>
+          <div class="btn btn-secondary subject-btn" data-subject="geography">Geography</div>
           <div class="btn btn-secondary subject-btn" data-subject="spelling">Spelling</div>
           <div class="btn btn-secondary subject-btn" data-subject="wellbeing">Wellbeing</div>
         </div>
@@ -531,6 +636,25 @@
       <div class="nav-item" onclick="showScreen('screen-kid-gap')">Progress</div>
     </div>
     <div id="floating-avatar" class="floating-avatar" title="Need a break?">🦸‍♀️</div>
+  </div>
+
+  <!-- 6c. Geography Mini-Game -->
+  <div id="screen-geography-flags" class="screen">
+    <div class="screen-title">Geography: Match the Flags</div>
+    <div class="content-area">
+      <div class="flag-match-title">Can you match the flags to the right countries?</div>
+      <div class="flag-match-container">
+        <div class="flag-row" id="flag-row">
+          <!-- Flags will be dynamically rendered -->
+        </div>
+        <div class="country-row" id="country-row">
+          <!-- Countries will be dynamically rendered -->
+        </div>
+        <button class="btn" id="btn-submit-flags" style="max-width:200px;margin-top:8px;">Submit</button>
+        <div class="flag-match-result" id="flag-match-result"></div>
+        <button class="btn btn-secondary" style="max-width:200px;" onclick="showScreen('screen-kid-home')">Back</button>
+      </div>
+    </div>
   </div>
 
   <!-- 6b. Wellbeing Companion Modal -->
@@ -703,6 +827,7 @@
       if(av) av.classList.remove('hide');
     }
     if (id==="screen-kid-spelling") startHangman();
+    if (id==="screen-geography-flags") setupFlagMatch();
   }
   document.getElementById('btn-parent').onclick = () => showScreen('screen-parent');
   document.getElementById('btn-kid').onclick = () => showScreen('screen-kid-welcome');
@@ -716,8 +841,8 @@
   document.getElementById('btn-next-onboarding').onclick = function() {
     kidName = document.getElementById('input-name').value.trim();
     const grade = document.getElementById('input-grade').value;
-    if (!kidName) { alert('Please enter your name!'); return; }
-    if (!grade) { alert('Please select your grade!'); return; }
+    if (!kidName) { alert('Please enter your name!'); document.getElementById('input-name').focus(); return; }
+    if (!grade) { alert('Please select your grade!'); document.getElementById('input-grade').focus(); return; }
     showScreen('screen-kid-avatar');
   };
   const avatarOptions = document.querySelectorAll('#avatar-grid .avatar-option');
@@ -752,11 +877,15 @@
   document.getElementById('btn-breathing-break').onclick = function() {
     showScreen('screen-kid-breathing');
   };
+  document.getElementById('btn-upload-parent').onclick = function() {
+    showScreen('screen-parent-upload');
+  };
   document.querySelectorAll('.subject-btn').forEach(btn => {
     btn.onclick = function() {
       const subject = btn.dataset.subject;
       if(subject === 'spelling') showScreen('screen-kid-spelling');
       else if(subject === 'wellbeing') showScreen('screen-kid-wellbeing');
+      else if(subject === 'geography') showScreen('screen-geography-flags');
       else showScreen('screen-kid-tutor');
     };
   });
@@ -769,6 +898,7 @@
       btn.classList.add('selected');
     }
   });
+
   // HANGMAN GAME: word is SPELLING, reveal S and L at start
   const hangmanWord = "SPELLING";
   let hangmanState = {};
@@ -835,6 +965,87 @@
   }
   window.guessHangmanLetter = guessHangmanLetter;
   window.startHangman = startHangman;
+
+  // Geography Flags Matching Mini-Game
+  let flagData = [
+    {flag:'🇫🇷', country:'France'},
+    {flag:'🇧🇷', country:'Brazil'},
+    {flag:'🇯🇵', country:'Japan'},
+    {flag:'🇦🇺', country:'Australia'}
+  ];
+  let shuffledFlags = [];
+  let shuffledCountries = [];
+  let flagSelections = [null,null,null,null];
+  let countrySelections = [null,null,null,null];
+  let currentFlagIndex = null;
+  let matched = [null,null,null,null];
+
+  function shuffle(arr) {
+    let a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function setupFlagMatch() {
+    shuffledFlags = shuffle(flagData);
+    shuffledCountries = shuffle(flagData);
+    flagSelections = [null,null,null,null];
+    countrySelections = [null,null,null,null];
+    matched = [null,null,null,null];
+    currentFlagIndex = null;
+    renderFlagMatch();
+    document.getElementById('flag-match-result').textContent = '';
+  }
+  function renderFlagMatch() {
+    let flagRow = document.getElementById('flag-row');
+    let countryRow = document.getElementById('country-row');
+    flagRow.innerHTML = '';
+    countryRow.innerHTML = '';
+    for(let i=0;i<shuffledFlags.length;i++) {
+      let btn = document.createElement('button');
+      btn.className = 'flag-btn' + (currentFlagIndex === i ? ' selected':'') + (matched[i] !== null ? ' disabled':'');
+      btn.disabled = matched[i] !== null;
+      btn.textContent = shuffledFlags[i].flag;
+      btn.onclick = function() {
+        currentFlagIndex = i;
+        renderFlagMatch();
+      };
+      flagRow.appendChild(btn);
+    }
+    for(let i=0;i<shuffledCountries.length;i++) {
+      let btn = document.createElement('button');
+      btn.className = 'country-btn' + (matched.includes(i) ? ' disabled' : '') + (currentFlagIndex!==null && countrySelections[currentFlagIndex]===i ? ' selected' : '');
+      btn.disabled = matched.includes(i);
+      btn.textContent = shuffledCountries[i].country;
+      btn.onclick = function() {
+        if(currentFlagIndex !== null && !matched[currentFlagIndex] && !matched.includes(i)) {
+          countrySelections[currentFlagIndex] = i;
+          // Each flag can have one selection
+          renderFlagMatch();
+        }
+      };
+      countryRow.appendChild(btn);
+    }
+  }
+  document.getElementById('btn-submit-flags').onclick = function() {
+    let correct = 0, total = flagData.length;
+    for(let i=0;i<flagData.length;i++) {
+      let idxFlag = shuffledFlags[i].country;
+      let idxCountry = shuffledCountries[countrySelections[i]] && shuffledCountries[countrySelections[i]].country;
+      if(idxCountry && idxFlag === idxCountry) {
+        matched[i] = countrySelections[i];
+        correct++;
+      }
+    }
+    renderFlagMatch();
+    if(correct === total) {
+      document.getElementById('flag-match-result').textContent = "🎉 Great job! All matched correctly!";
+    } else {
+      document.getElementById('flag-match-result').textContent = "Matched "+correct+" of "+total+". Try to match all!";
+    }
+  };
 </script>
 </body>
 </html>
