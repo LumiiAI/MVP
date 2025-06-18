@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lumii AI - MVP</title>
+  <meta name="viewport" content="width=375, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    html, body {
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+    body {
+      min-height: 100vh;
+      font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .container {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 2.5px solid #e2e8f0;
+      width: 100%;
+      max-width: 410px;
+      min-height: 640px;
+      margin: 24px auto 24px auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    @media (max-width: 430px) {
+      .container {
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+        max-width: 100vw;
+      }
+    }
+    .screen {
+      width: 100%;
+      height: 100%;
+      min-height: 640px;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      background: #fff;
+    }
+    .screen.active { display: flex; }
+    .screen-title {
+      font-weight: bold;
+      font-size: 20px;
+      color: #2d3748;
+      margin-bottom: 18px;
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e2e8f0;
+      background: #fff;
+      border-radius: 0 0 15px 15px;
+    }
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px 12px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      position: relative;
+    }
+    .card {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 15px 15px 15px;
+      margin-bottom: 15px;
+    }
+    .btn, button.btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 13px 0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 7px 0;
+      width: 100%;
+      cursor: pointer;
+      transition: background .16s;
+    }
+    .btn:active, .btn:focus { background: #4e47c5; }
+    .btn-secondary {
+      background: #e2e8f0 !important;
+      color: #4a5568 !important;
+      border: 2px solid #cbd5e0;
+    }
+    .input-field {
+      width: 100%; padding: 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px; margin: 8px 0; font-size: 16px;
+      box-sizing: border-box;
+      background: #fff;
+    }
+    .input-field:focus { outline: 2px solid #667eea; }
+    /* Avatar grid */
+    .avatar-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 14px; margin: 20px 0;
+    }
+    .avatar-option {
+      text-align: center; padding: 10px 4px;
+      border-radius: 12px; border: 2px solid #e2e8f0;
+      background: #f7fafc; cursor: pointer;
+      transition: border .2s, background .2s;
+      user-select: none;
+    }
+    .avatar-option.selected { border-color: #667eea; background: #edf2f7;}
+    .avatar-circle {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: #fff; border: 2px solid #e2e8f0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin: 0 auto 8px;
+    }
+    .avatar-name { font-size: 13px; font-weight: bold; color: #4a5568;}
+    /* Floating avatar */
+    .floating-avatar {
+      position: fixed;
+      bottom: 32px; right: 32px;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      border: 3px solid #667eea;
+      cursor: pointer;
+      z-index: 1001;
+      transition: opacity .2s;
+    }
+    .floating-avatar.hide { display: none !important;}
+    /* Mood selector */
+    .mood-selector { display: flex; justify-content: space-between; margin: 15px 0;}
+    .mood-option {
+      width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e2e8f0;
+      background: #f7fafc; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; cursor: pointer; transition: border .12s;
+    }
+    .mood-option.selected { border-color: #667eea; background: #edf2f7;}
+    /* Progress bar */
+    .progress-bar {
+      width: 100%; height: 8px; background: #e2e8f0;
+      border-radius: 4px; margin: 10px 0; border: 1px solid #cbd5e0;
+    }
+    .progress-fill { height: 100%; background: #48bb78; border-radius: 4px;}
+    /* Nav */
+    .bottom-nav {
+      position: absolute;
+      left: 14px; right: 14px; bottom: 10px;
+      height: 56px;
+      background: #f7fafc;
+      border-radius: 15px;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 10;
+    }
+    .nav-item {
+      width: 50px; height: 40px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      border: 1px solid #cbd5e0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 12px; color: #4a5568; cursor: pointer;
+      user-select: none;
+    }
+    .nav-item.active { background: #667eea; color: white; }
+    /* Hangman styles */
+    #hangman-visual {
+      font-family: monospace; font-size: 18px;
+      min-height: 110px; margin-bottom: 0;
+      white-space: pre; color: #2d3748;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #hangman-word {
+      font-size: 2rem; letter-spacing: 12px; margin-bottom: 10px;text-align:center;
+    }
+    #hangman-letters { margin-bottom:14px; }
+    .hangman-letter-btn {
+      display: inline-block; min-width:32px; min-height:32px;
+      margin: 2px 3px; font-size: 20px; border-radius: 5px;
+      background: #e2e8f0; color: #2d3748; border: 1.5px solid #cbd5e0;
+      cursor: pointer; font-weight: bold;
+      transition: background .14s, color .14s;
+      margin-bottom: 6px;
+    }
+    .hangman-letter-btn:disabled { background: #fbb6ce; color: #aaa; cursor: not-allowed;}
+    #hangman-message { font-size: 1.15rem; font-weight: bold; margin-top: 8px;}
+    /* Welcome logo */
+    .lumii-logo-main {
+      width: 110px; height: 110px;
+      margin: 0 auto 20px auto;
+      border-radius: 50%;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      font-weight: 700;
+      letter-spacing: 2px;
+      border: 5px solid #ebe7fc;
+      box-shadow: 0 6px 20px #764ba233;
+    }
+    /* For mobile edge cases */
+    @media (max-width: 400px) {
+      .container { border-radius:0; }
+      .card { padding: 11px 6px 12px 6px; }
+      .bottom-nav { left: 2vw; right: 2vw; }
+      .content-area { padding: 18px 4vw 10px 4vw;}
+    }
+    .hide { display: none !important; }
+    /* Misc */
+    ul { margin: 0; padding-left: 22px; }
+    .card-title { font-weight: 600; margin-bottom: 7px; font-size: 15px;}
+    .weekly-grid {
+      display: flex; flex-direction: column; gap: 12px; margin: 15px 0;
+    }
+    .day-card {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .day-card.completed { background: #c6f6d5; border-color: #9ae6b4;}
+    .day-card.today { background: #bee3f8; border-color: #63b3ed;}
+    .day-card.weekend { background: #fbb6ce; border-color: #f687b3;}
+    .day-header {display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0;}
+    .day-name { font-weight: bold; font-size: 12px; color: #2d3748; }
+    .day-status { font-size: 14px;}
+    .activity-item {
+      font-size: 10px; padding: 4px 8px;
+      border-radius: 6px; background: #fff; border: 1px solid #e2e8f0;
+      display: inline-block; margin: 2px 0;
+    }
+    .activity-item.done { background: #c6f6d5; border-color: #9ae6b4; text-decoration: line-through; color: #2f855a; }
+    .activity-item.current { background: #fef5e7; border-color: #f6ad55; color: #744210; font-weight: bold;}
+    .activity-item.pending { color: #718096;}
+    .chart-placeholder {
+      width: 100%; height: 80px;
+      background: #f7fafc;
+      border: 2px dashed #e2e8f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #718096;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ROLE SELECTOR -->
+  <div id="screen-role" class="screen active">
+    <div class="screen-title">Who is using Lumii?</div>
+    <div style="display:flex;justify-content:center;gap:40px;margin:60px 0;">
+      <div id="select-parent" style="text-align:center;cursor:pointer;">
+        <div style="font-size:60px;">👨‍👩‍👧‍👦</div>
+        <div style="font-weight:bold;margin-top:16px;">Parent</div>
+      </div>
+      <div id="select-kid" style="text-align:center;cursor:pointer;">
+        <div style="font-size:60px;">🧒</div>
+        <div style="font-weight:bold;margin-top:16px;">Kid</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARENT DASHBOARD -->
+  <div id="screen-parent" class="screen">
+    <div class="screen-title">Parent Dashboard</div>
+    <div class="content-area">
+      <div class="card">
+        <div class="card-title">Weekly Progress</div>
+        <div class="chart-placeholder">[Weekly Progress Chart Placeholder]</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Learning Suggestions</div>
+        <ul>
+          <li>Review multiplication tables</li>
+          <li>Encourage daily reading</li>
+          <li>Check homework completion</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Wellbeing Suggestions</div>
+        <ul>
+          <li>Ask how they're feeling after school</li>
+          <li>Practice a 2-min breathing break together</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Important Dates</div>
+        <ul>
+          <li>Math Test: June 21</li>
+          <li>Science Project Due: June 28</li>
+        </ul>
+      </div>
+      <button class="btn" style="margin-top:16px;">Upload Materials</button>
+      <button class="btn btn-secondary" style="margin-top:8px;" onclick="showScreen('screen-role')">Back</button>
+    </div>
+  </div>
+
+  <!-- KID FLOW -->
+  <!-- 1. Welcome Page with Logo -->
+  <div id="screen-kid-welcome-logo" class="screen">
+    <div class="content-area" style="align-items:center;justify-content:center;flex:1;">
+      <div class="lumii-logo-main">Lumii</div>
+      <h2 style="color:#2d3748;margin-bottom:12px;text-align:center;">Welcome to Lumii!</h2>
+      <div style="color:#718096;font-size:14px;margin-bottom:36px;text-align:center;">Your AI learning companion</div>
+      <button class="btn" id="btn-to-onboarding">Get Started</button>
+      <button class="btn btn-secondary" onclick="showScreen('screen-role')">Back</button>
+    </div>
+  </div>
+
+  <!-- 2. Name/Grade Entry -->
+  <div id="screen-kid-onboarding" class="screen">
+    <div class="screen-title">Let's get to know you!</div>
+    <div class="content-area" style="align-items:center;justify-content:center;flex:1;">
+      <div class="card" style="margin-top:22px;">
+        <div class="card-title">What's your name?</div>
+        <input type="text" class="input-field" id="input-name" placeholder="Enter your name">
+      </div>
+      <div class="card">
+        <div class="card-title">What grade are you in?</div>
+        <select class="input-field" id="input-grade">
+          <option value="">Select grade level</option>
+          <option>Kindergarten</option>
+          <option>Year 1</option>
+          <option>Year 2</option>
+          <option>Year 3</option>
+          <option>Year 4</option>
+          <option>Year 5</option>
+          <option>Year 6</option>
+          <option>Year 7</option>
+          <option>Year 8</option>
+          <option>Year 9</option>
+          <option>Year 10</option>
+          <option>Year 11</option>
+          <option>Year 12</option>
+        </select>
+      </div>
+      <button class="btn" id="btn-next-onboarding">Next: Choose Your Avatar</button>
+      <button class="btn btn-secondary" onclick="showScreen('screen-kid-welcome-logo')">Back</button>
+    </div>
+  </div>
+  <!-- 3. Avatar Selection -->
+  <div id="screen-kid-avatar" class="screen">
+    <div class="screen-title">Choose Your Avatar</div>
+    <div class="content-area">
+      <div style="text-align:center;margin:20px 0;">
+        <h2 style="color:#2d3748;margin-bottom:10px;">Pick your learning buddy!</h2>
+        <p style="color:#718096;font-size:12px;margin-bottom:20px;">You can change this anytime</p>
+      </div>
+      <div class="avatar-grid" id="avatar-grid">
+        <div class="avatar-option selected" data-avatar="Hero"><div class="avatar-circle">🦸‍♀️</div><div class="avatar-name">Hero</div></div>
+        <div class="avatar-option" data-avatar="Kitty"><div class="avatar-circle">🐱</div><div class="avatar-name">Kitty</div></div>
+        <div class="avatar-option" data-avatar="Space"><div class="avatar-circle">🚀</div><div class="avatar-name">Space</div></div>
+        <div class="avatar-option" data-avatar="Rainbow"><div class="avatar-circle">🌈</div><div class="avatar-name">Rainbow</div></div>
+        <div class="avatar-option" data-avatar="Unicorn"><div class="avatar-circle">🦄</div><div class="avatar-name">Unicorn</div></div>
+        <div class="avatar-option" data-avatar="Dragon"><div class="avatar-circle">🐉</div><div class="avatar-name">Dragon</div></div>
+      </div>
+      <div class="card" id="avatar-preview" style="background:#e6fffa;border-color:#4fd1c7;text-align:center;">
+        <div style="font-size:40px;margin-bottom:10px;" id="avatar-emoji">🦸‍♀️</div>
+        <div style="font-weight:bold;color:#2c7a7b;" id="avatar-label">You chose Hero!</div>
+        <div style="font-size:10px;color:#2c7a7b;margin-top:5px;" id="avatar-desc">Ready to learn and grow strong!</div>
+      </div>
+      <button class="btn" id="btn-avatar-next">Let's Start Learning!</button>
+      <button class="btn btn-secondary" onclick="showScreen('screen-kid-onboarding')">Back</button>
+    </div>
+  </div>
+  <!-- 4. Home Dashboard -->
+  <div id="screen-kid-home" class="screen">
+    <div class="screen-title">Home</div>
+    <div class="content-area">
+      <div class="card card-large" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;">
+        <div>
+          <div style="font-weight:bold;margin-bottom:5px;">Today's Goal</div>
+          <div style="font-size:10px;opacity:.9;">Complete 3 lessons</div>
+          <div class="progress-bar" style="background:rgba(255,255,255,0.3);">
+            <div class="progress-fill" style="background:white;width:33%;"></div>
+          </div>
+        </div>
+        <div style="font-size:20px;">🎯</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Quick Actions</div>
+        <button class="btn" id="btn-curriculum-assessment">🧠 Take Curriculum Assessment</button>
+        <button class="btn btn-secondary">💬 Chat with Lumii AI</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Subjects</div>
+        <div style="display:flex;gap:12px;">
+          <div class="btn btn-secondary subject-btn" data-subject="math">Math</div>
+          <div class="btn btn-secondary subject-btn" data-subject="geography">Geography</div>
+          <div class="btn btn-secondary subject-btn" data-subject="spelling">Spelling</div>
+          <div class="btn btn-secondary subject-btn" data-subject="wellbeing">Wellbeing</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">My Weekly Plan</div>
+        <div class="weekly-grid">
+          <div class="day-card completed">
+            <div class="day-header"><span class="day-name">MON</span><span class="day-status">✅</span></div>
+            <div class="activity-item done">Math: Fractions</div>
+            <div class="activity-item done">Spelling Quiz</div>
+            <div class="activity-item done">Mindful Moments</div>
+          </div>
+          <div class="day-card today">
+            <div class="day-header"><span class="day-name">TUE</span><span class="day-status">📍</span></div>
+            <div class="activity-item done">Geography: Continents</div>
+            <div class="activity-item current">Math: Word Problems</div>
+            <div class="activity-item pending">Breathing Exercise</div>
+          </div>
+          <div class="day-card">
+            <div class="day-header"><span class="day-name">WED</span><span class="day-status">⏳</span></div>
+            <div class="activity-item pending">Science: Plants</div>
+            <div class="activity-item pending">Reading: Story time</div>
+            <div class="activity-item pending">Wellbeing check</div>
+          </div>
+          <div class="day-card">
+            <div class="day-header"><span class="day-name">THU</span><span class="day-status">⏳</span></div>
+            <div class="activity-item pending">Math: Review</div>
+            <div class="activity-item pending">Art: Creative time</div>
+            <div class="activity-item pending">Mindfulness</div>
+          </div>
+          <div class="day-card weekend">
+            <div class="day-header"><span class="day-name">FRI</span><span class="day-status">🎉</span></div>
+            <div class="activity-item pending">Fun Quiz</div>
+            <div class="activity-item pending">Show & Tell</div>
+            <div class="activity-item pending">Celebration!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="showScreen('screen-kid-home')">Home</div>
+      <div class="nav-item learn-btn" onclick="showScreen('screen-kid-tutor')">Learn</div>
+      <div class="nav-item wellbeing-btn" onclick="showScreen('screen-kid-wellbeing')">Wellbeing</div>
+      <div class="nav-item" onclick="showScreen('screen-kid-gap')">Progress</div>
+    </div>
+  </div>
+  <!-- 5. Gap Analysis -->
+  <div id="screen-kid-gap" class="screen">
+    <div class="screen-title">📊 Gap Analysis</div>
+    <div class="content-area">
+      <div class="card" style="text-align:center;background:#edf2f7;">
+        <div style="font-weight:bold;margin-bottom:10px;">Assessment Results</div>
+        <div style="font-size:10px;color:#718096;margin-bottom:15px;">Based on your recent performance</div>
+        <div style="margin:15px 0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;">
+            <span style="font-size:11px;">Fractions</span>
+            <div style="width:60%;background:#e2e8f0;height:6px;border-radius:3px;">
+              <div style="width:30%;height:100%;background:#f56565;border-radius:3px;"></div>
+            </div>
+            <span style="font-size:10px;color:#e53e3e;">Needs Work</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;">
+            <span style="font-size:11px;">Multiplication</span>
+            <div style="width:60%;background:#e2e8f0;height:6px;border-radius:3px;">
+              <div style="width:70%;height:100%;background:#ed8936;border-radius:3px;"></div>
+            </div>
+            <span style="font-size:10px;color:#dd6b20;">Improving</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;">
+            <span style="font-size:11px;">Addition</span>
+            <div style="width:60%;background:#e2e8f0;height:6px;border-radius:3px;">
+              <div style="width:90%;height:100%;background:#48bb78;border-radius:3px;"></div>
+            </div>
+            <span style="font-size:10px;color:#38a169;">Strong</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📚 Recommended Focus Areas</div>
+        <div class="card-small" style="margin:8px 0;background:#fed7d7;">
+          <div class="card-icon" style="background:#f56565;"></div>
+          <div class="card-text">
+            <div class="card-title">Fractions Basics</div>
+            <div>Start with simple fractions</div>
+          </div>
+        </div>
+        <div class="card-small" style="margin:8px 0;background:#feebc8;">
+          <div class="card-icon" style="background:#ed8936;"></div>
+          <div class="card-text">
+            <div class="card-title">Times Tables</div>
+            <div>Practice 6-9 multiplication</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn" id="btn-start-learning-path">Start Personalized Learning Path</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showScreen('screen-kid-home')">Home</div>
+      <div class="nav-item learn-btn" onclick="showScreen('screen-kid-tutor')">Learn</div>
+      <div class="nav-item wellbeing-btn" onclick="showScreen('screen-kid-wellbeing')">Wellbeing</div>
+      <div class="nav-item active" onclick="showScreen('screen-kid-gap')">Progress</div>
+    </div>
+  </div>
+  <!-- 6. AI Tutor (Math) -->
+  <div id="screen-kid-tutor" class="screen">
+    <div class="screen-title">🤖 AI Tutor - Math</div>
+    <div class="content-area">
+      <div style="background:#edf2f7;border-radius:12px;padding:15px;margin-bottom:15px;">
+        <div style="display:flex;align-items:center;margin-bottom:10px;">
+          <div style="width:30px;height:30px;background:#667eea;border-radius:50%;margin-right:10px;"></div>
+          <div style="font-weight:bold;font-size:12px;">Lumii AI</div>
+        </div>
+        <div style="font-size:11px;color:#4a5568;">
+          Hi! Let's work on fractions today. Can you tell me what 1/2 + 1/4 equals?
+        </div>
+      </div>
+      <div style="background:#667eea;color:white;border-radius:12px;padding:15px;margin-bottom:15px;margin-left:20px;">
+        <div style="font-size:11px;">I think it's 2/6?</div>
+      </div>
+      <div style="background:#edf2f7;border-radius:12px;padding:15px;margin-bottom:15px;">
+        <div style="display:flex;align-items:center;margin-bottom:10px;">
+          <div style="width:30px;height:30px;background:#667eea;border-radius:50%;margin-right:10px;"></div>
+          <div style="font-weight:bold;font-size:12px;">Lumii AI</div>
+        </div>
+        <div style="font-size:11px;color:#4a5568;margin-bottom:10px;">
+          Good try! Let me show you another way to think about it.
+        </div>
+        <div style="background:white;border:2px solid #e2e8f0;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:16px;margin-bottom:5px;">🍕</div>
+          <div style="font-size:10px;">What if we had 4 equal pizza slices?</div>
+        </div>
+      </div>
+      <div style="background:#667eea;color:white;border-radius:12px;padding:15px;margin-bottom:15px;margin-left:20px;">
+        <div style="font-size:11px;">Um... 3/4?</div>
+      </div>
+      <div style="background:#fef5e7;border:2px solid #f6ad55;border-radius:12px;padding:15px;margin-bottom:15px;">
+        <div style="display:flex;align-items:center;margin-bottom:10px;">
+          <div style="width:30px;height:30px;background:#667eea;border-radius:50%;margin-right:10px;"></div>
+          <div style="font-weight:bold;font-size:12px;">Lumii AI</div>
+          <div style="margin-left:auto;font-size:16px;">🌸</div>
+        </div>
+        <div style="font-size:11px;color:#744210;margin-bottom:10px;">
+          I can see you're working hard! Sometimes our brains need a little break. Should we pause and do a fun breathing exercise together? It might help us think more clearly!
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn" id="btn-breathe-from-tutor" style="flex:1;background:#48bb78;font-size:12px;">Yes, let's breathe!</button>
+          <button class="btn btn-secondary" style="flex:1;font-size:12px;">Keep trying</button>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showScreen('screen-kid-home')">Home</div>
+      <div class="nav-item learn-btn active" onclick="showScreen('screen-kid-tutor')">Learn</div>
+      <div class="nav-item wellbeing-btn" onclick="showScreen('screen-kid-wellbeing')">Wellbeing</div>
+      <div class="nav-item" onclick="showScreen('screen-kid-gap')">Progress</div>
+    </div>
+  </div>
+  <!-- 7. Wellbeing Check-in -->
+  <div id="screen-kid-wellbeing" class="screen">
+    <div class="screen-title">💙 Wellbeing Check-in</div>
+    <div class="content-area">
+      <div class="card" style="text-align:center;">
+        <div style="font-weight:bold;margin-bottom:15px;">How are you feeling today?</div>
+        <div class="mood-selector" id="mood-selector">
+          <div class="mood-option">😢</div>
+          <div class="mood-option">😕</div>
+          <div class="mood-option selected">😊</div>
+          <div class="mood-option">😄</div>
+          <div class="mood-option">🤩</div>
+        </div>
+        <div style="font-size:10px;color:#718096;margin-top:10px;">Tap to select your mood</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:bold;margin-bottom:10px;">Energy Level</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:75%;background:#ed8936;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:#718096;margin-top:5px;">
+          <span>Low</span><span>High</span>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:bold;margin-bottom:10px;">How was school today?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="btn btn-secondary" style="padding:8px;font-size:10px;">😊 Great</button>
+          <button class="btn btn-secondary" style="padding:8px;font-size:10px;">😐 Okay</button>
+          <button class="btn" style="padding:8px;font-size:10px;">😟 Tough</button>
+          <button class="btn btn-secondary" style="padding:8px;font-size:10px;">😴 Boring</button>
+        </div>
+      </div>
+      <div class="card" style="background:#e6fffa;border-color:#4fd1c7;">
+        <div style="text-align:center;">
+          <div style="font-weight:bold;margin-bottom:5px;">🌸 Take a Breathing Break</div>
+          <div style="font-size:10px;color:#2c7a7b;margin-bottom:10px;">Let's do some calm breathing together</div>
+          <button class="btn" id="btn-breathing-break" style="background:#319795;">Start 2-Minute Exercise</button>
+        </div>
+      </div>
+      <button class="btn btn-secondary" onclick="showScreen('screen-kid-home')">Back</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showScreen('screen-kid-home')">Home</div>
+      <div class="nav-item learn-btn" onclick="showScreen('screen-kid-tutor')">Learn</div>
+      <div class="nav-item wellbeing-btn active" onclick="showScreen('screen-kid-wellbeing')">Wellbeing</div>
+      <div class="nav-item" onclick="showScreen('screen-kid-gap')">Progress</div>
+    </div>
+  </div>
+  <!-- 8. Breathing Exercise -->
+  <div id="screen-kid-breathing" class="screen">
+    <div class="screen-title">🌸 Breathing Exercise</div>
+    <div class="content-area" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div style="width:180px;height:180px;border-radius:50%;border:4px solid #667eea;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:24px;color:#4a5568;text-align:center;margin:16px 0 20px 0;">
+        Breathe in...<br>Breathe out...
+      </div>
+      <div style="font-size:16px;font-weight:bold;color:#2d3748;margin-bottom:10px;text-align:center;">
+        Let's relax for 2 minutes!
+      </div>
+      <button class="btn" id="btn-breathing-done" style="background:#48bb78;font-size:14px;">Done</button>
+    </div>
+  </div>
+  <!-- 9. Spelling Game (Hangman) -->
+  <div id="screen-kid-spelling" class="screen">
+    <div class="screen-title">Spelling Game</div>
+    <div class="content-area" style="text-align:center;">
+      <div style="font-size:18px;color:#667eea;margin-bottom:10px;font-weight:bold;">Guess the word!</div>
+      <div id="hangman-visual"></div>
+      <div id="hangman-word" style="margin-bottom:12px;">_ _ _ _ _</div>
+      <div id="hangman-letters"></div>
+      <div id="hangman-message"></div>
+      <button class="btn" onclick="startHangman()" style="margin-top:14px;">Restart</button>
+      <button class="btn btn-secondary" onclick="showScreen('screen-kid-home')" style="margin-top:10px;">Back</button>
+    </div>
+  </div>
+
+  <!-- FLOATING AVATAR BUTTON -->
+  <div id="floating-avatar" class="floating-avatar hide" title="Need a break?">🦸‍♀️</div>
+</div>
+<script>
+  // NAVIGATION
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    // Floating avatar logic: show only on kid screens except wellbeing or spelling or breathing
+    const kidScreensWithAvatar = [
+      'screen-kid-home','screen-kid-gap','screen-kid-tutor'
+    ];
+    if (kidScreensWithAvatar.includes(id)) {
+      document.getElementById('floating-avatar').classList.remove('hide');
+    } else {
+      document.getElementById('floating-avatar').classList.add('hide');
+    }
+    // Hangman auto-start if entering spelling
+    if (id==="screen-kid-spelling") startHangman();
+  }
+  // Role selector
+  document.getElementById('select-parent').onclick = () => showScreen('screen-parent');
+  document.getElementById('select-kid').onclick = () => showScreen('screen-kid-welcome-logo');
+  document.getElementById('floating-avatar').onclick = () => showScreen('screen-kid-wellbeing');
+  // Welcome logo → onboarding
+  document.getElementById('btn-to-onboarding').onclick = () => showScreen('screen-kid-onboarding');
+  // Onboarding Name/Grade
+  let kidName = '';
+  let chosenAvatar = 'Hero';
+  let chosenAvatarEmoji = '🦸‍♀️';
+  const avatarDescriptions = {
+    "Hero": "Ready to learn and grow strong!",
+    "Kitty": "Curious and quick to learn!",
+    "Space": "Ready to explore new worlds!",
+    "Rainbow": "Colorful and positive learning!",
+    "Unicorn": "Magical journeys ahead!",
+    "Dragon": "Brave and wise learning!"
+  };
+  const avatarEmojis = {
+    "Hero": "🦸‍♀️", "Kitty": "🐱", "Space": "🚀", "Rainbow": "🌈", "Unicorn": "🦄", "Dragon": "🐉"
+  };
+  document.getElementById('btn-next-onboarding').onclick = function() {
+    kidName = document.getElementById('input-name').value.trim();
+    const grade = document.getElementById('input-grade').value;
+    if (!kidName) { alert('Please enter your name!'); return; }
+    if (!grade) { alert('Please select your grade!'); return; }
+    showScreen('screen-kid-avatar');
+  };
+  // Avatar selection
+  const avatarOptions = document.querySelectorAll('#avatar-grid .avatar-option');
+  avatarOptions.forEach(option => {
+    option.onclick = function() {
+      avatarOptions.forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+      const name = this.querySelector('.avatar-name').textContent;
+      document.getElementById('avatar-emoji').textContent = avatarEmojis[name];
+      document.getElementById('avatar-label').textContent = `You chose ${name}!`;
+      document.getElementById('avatar-desc').textContent = avatarDescriptions[name] || "";
+      chosenAvatar = name;
+      chosenAvatarEmoji = avatarEmojis[name];
+      document.getElementById('floating-avatar').textContent = chosenAvatarEmoji;
+    }
+  });
+  document.getElementById('btn-avatar-next').onclick = function() {
+    document.getElementById('floating-avatar').textContent = chosenAvatarEmoji;
+    showScreen('screen-kid-home');
+  };
+  // Curriculum assessment button
+  document.getElementById('btn-curriculum-assessment').onclick = function() {
+    showScreen('screen-kid-gap');
+  };
+  // Gap: Start learning path
+  document.getElementById('btn-start-learning-path').onclick = function() {
+    showScreen('screen-kid-tutor');
+  };
+  // Tutor: breathing break
+  document.getElementById('btn-breathe-from-tutor').onclick = function() {
+    showScreen('screen-kid-breathing');
+  };
+  // Breathing: done returns to wellbeing
+  document.getElementById('btn-breathing-done').onclick = function() {
+    showScreen('screen-kid-wellbeing');
+  };
+  // Wellbeing: breathing break
+  document.getElementById('btn-breathing-break').onclick = function() {
+    showScreen('screen-kid-breathing');
+  };
+  // Subject/learn buttons: math/geography goes to tutor, spelling to spelling game, wellbeing to wellbeing
+  document.querySelectorAll('.subject-btn').forEach(btn => {
+    btn.onclick = function() {
+      const subject = btn.dataset.subject;
+      if(subject === 'spelling') showScreen('screen-kid-spelling');
+      else if(subject === 'wellbeing') showScreen('screen-kid-wellbeing');
+      else showScreen('screen-kid-tutor');
+    };
+  });
+  // Bottom nav: learn btn
+  document.querySelectorAll('.learn-btn').forEach(btn=>{
+    btn.onclick = function() { showScreen('screen-kid-tutor'); };
+  });
+  // Bottom nav: wellbeing btn
+  document.querySelectorAll('.wellbeing-btn').forEach(btn=>{
+    btn.onclick = function() { showScreen('screen-kid-wellbeing'); };
+  });
+  // Mood selector
+  document.querySelectorAll('.mood-option').forEach(btn=>{
+    btn.onclick = function() {
+      btn.parentElement.querySelectorAll('.mood-option').forEach(opt=>opt.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+  });
+
+  // HANGMAN GAME: word is SPELLING
+  const hangmanWord = "SPELLING";
+  let hangmanState = {};
+  function startHangman() {
+    hangmanState = {
+      word: hangmanWord,
+      progress: Array(hangmanWord.length).fill("_"),
+      guessed: [],
+      wrong: [],
+      maxWrong: 6,
+      gameover: false
+    };
+    renderHangman();
+  }
+  function guessHangmanLetter(letter) {
+    if(hangmanState.gameover) return;
+    letter = letter.toUpperCase();
+    if(hangmanState.guessed.includes(letter)) return;
+    hangmanState.guessed.push(letter);
+    if(hangmanState.word.includes(letter)) {
+      // Reveal all
+      for(let i=0;i<hangmanState.word.length;i++) {
+        if(hangmanState.word[i] === letter) hangmanState.progress[i] = letter;
+      }
+    } else {
+      hangmanState.wrong.push(letter);
+    }
+    // Win/Lose check
+    if(hangmanState.progress.join('') === hangmanState.word) {
+      hangmanState.gameover = true;
+      setTimeout(()=>{document.getElementById('hangman-message').textContent = "🎉 You won! The word was SPELLING";}, 180);
+    } else if(hangmanState.wrong.length >= hangmanState.maxWrong) {
+      hangmanState.gameover = true;
+      setTimeout(()=>{document.getElementById('hangman-message').textContent = "😢 Game Over! The word was SPELLING";}, 180);
+    }
+    renderHangman();
+  }
+  function renderHangman() {
+    // Visual
+    const stages = [
+      `
+ _______
+ |     |
+ |     
+ |    
+ |    
+_|_
+      `,
+      `
+ _______
+ |     |
+ |     O
+ |    
+ |    
+_|_
+      `,
+      `
+ _______
+ |     |
+ |     O
+ |     |
+ |    
+_|_
+      `,
+      `
+ _______
+ |     |
+ |     O
+ |    /|
+ |    
+_|_
+      `,
+      `
+ _______
+ |     |
+ |     O
+ |    /|\\
+ |    
+_|_
+      `,
+      `
+ _______
+ |     |
+ |     O
+ |    /|\\
+ |    / 
+_|_
+      `,
+      `
+ _______
+ |     |
+ |     O
+ |    /|\\
+ |    / \\
+_|_
+      `
+    ];
+    document.getElementById('hangman-visual').innerHTML = `<pre>${stages[hangmanState.wrong.length]}</pre>`;
+    document.getElementById('hangman-word').textContent = hangmanState.progress.join(" ");
+    // Letters
+    let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let letterBtns = "";
+    for(let letter of alphabet) {
+      letterBtns += `<button class="hangman-letter-btn" onclick="guessHangmanLetter('${letter}')" ${hangmanState.guessed.includes(letter)||hangmanState.gameover?"disabled":""}>${letter}</button>`;
+    }
+    document.getElementById('hangman-letters').innerHTML = letterBtns;
+    // Message
+    if(!hangmanState.gameover) {
+      document.getElementById('hangman-message').textContent = hangmanState.wrong.length>0?"Wrong guesses: "+hangmanState.wrong.join(" "):"";
+    }
+  }
+  window.guessHangmanLetter = guessHangmanLetter;
+  window.startHangman = startHangman;
+</script>
+</body>
+</html>
