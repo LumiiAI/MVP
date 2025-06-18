@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lumii AI - Clickable Wireframe</title>
+    <meta name="viewport" content="width=375, initial-scale=1.0">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            line-height: 1.4;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        h1 { text-align: center; color: #2d3748; margin-bottom: 30px; font-size: 2.5rem; }
+        /* Phone frame is wider, fits iPhone 12/13/14 */
+        .phone-frame {
+            background: #fff;
+            border-radius: 25px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid #e2e8f0;
+            position: relative;
+            width: 375px;
+            height: 700px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .screen {
+            background: #fff;
+            border-radius: 15px;
+            height: 100%;
+            padding: 20px;
+            border: 2px solid #cbd5e0;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 18px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+        .logo {
+            width: 60px; height: 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 12px; font-weight: bold;
+        }
+        .profile-icon {
+            width: 30px; height: 30px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            border: 2px solid #cbd5e0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+        .bottom-nav {
+            position: absolute;
+            bottom: 15px; left: 15px; right: 15px;
+            height: 60px;
+            background: #f7fafc;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .nav-item {
+            width: 50px; height: 40px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 10px; color: #4a5568; cursor: pointer;
+        }
+        .nav-item.active { background: #667eea; color: white; }
+        .nav-icon {
+            width: 18px; height: 13px;
+            background: currentColor;
+            border-radius: 2px;
+            margin-bottom: 2px;
+        }
+        .card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 7px 0;
+            width: 100%;
+            cursor: pointer;
+        }
+        .btn-secondary {
+            background: #e2e8f0; color: #4a5568;
+            border: 2px solid #cbd5e0;
+        }
+        .input-field {
+            width: 100%; padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px; margin: 8px 0; font-size: 14px;
+        }
+        /* Avatar selection */
+        .avatar-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0;
+        }
+        .avatar-option {
+            text-align: center; padding: 10px;
+            border-radius: 12px; border: 2px solid #e2e8f0;
+            background: #f7fafc; cursor: pointer;
+        }
+        .avatar-option.selected { border-color: #667eea; background: #edf2f7;}
+        .avatar-circle {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: #fff; border: 2px solid #e2e8f0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin: 0 auto 8px;
+        }
+        .avatar-name { font-size: 12px; font-weight: bold; color: #4a5568;}
+        /* Mood selector */
+        .mood-selector { display: flex; justify-content: space-between; margin: 15px 0;}
+        .mood-option {
+            width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e2e8f0;
+            background: #f7fafc; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer;
+        }
+        .mood-option.selected { border-color: #667eea; background: #edf2f7;}
+        /* Progress bar */
+        .progress-bar {
+            width: 100%; height: 8px; background: #e2e8f0;
+            border-radius: 4px; margin: 10px 0; border: 1px solid #cbd5e0;
+        }
+        .progress-fill { height: 100%; background: #48bb78; border-radius: 4px;}
+        /* Hide all screens except the first */
+        .app-screen { display: none; flex-direction: column; height: 100%;}
+        .app-screen.active { display: flex;}
+        /* For no horizontal scroll */
+        html, body { max-width: 100vw; overflow-x: hidden;}
+        @media (max-width: 450px) {
+            .phone-frame { width: 99vw; min-width: 99vw; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🎓 Lumii AI - Clickable Wireframes</h1>
+    <div class="phone-frame">
+        <!-- Welcome & Onboarding -->
+        <div class="app-screen active" id="screen-welcome">
+            <div class="screen">
+                <div class="screen-title">Welcome & Onboarding</div>
+                <div class="content-area">
+                    <div style="text-align:center;margin:40px 0;">
+                        <div class="logo" style="width:100px;height:100px;margin:0 auto 20px;border-radius:50%;font-size:24px;">Lumii</div>
+                        <h2 style="color:#2d3748;margin-bottom:10px;">Welcome to Lumii!</h2>
+                        <p style="color:#718096;font-size:12px;margin-bottom:30px;">Your AI learning companion</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">What's your name?</div>
+                        <input type="text" class="input-field" id="input-name" placeholder="Enter your name">
+                    </div>
+                    <div class="card">
+                        <div class="card-title">What grade are you in?</div>
+                        <select class="input-field" id="input-grade">
+                            <option value="">Select grade level</option>
+                            <!-- Years 1-12 -->
+                            ${[...Array(12).keys()].map(i => `<option>Year ${i+1}</option>`).join('')}
+                        </select>
+                    </div>
+                    <button class="btn" id="btn-next-onboarding">Next: Choose Your Avatar</button>
+                </div>
+            </div>
+        </div>
+        <!-- Avatar Selection -->
+        <div class="app-screen" id="screen-avatar">
+            <div class="screen">
+                <div class="screen-title">Choose Your Avatar</div>
+                <div class="content-area">
+                    <div style="text-align:center;margin:20px 0;">
+                        <h2 style="color:#2d3748;margin-bottom:10px;">Pick your learning buddy!</h2>
+                        <p style="color:#718096;font-size:12px;margin-bottom:20px;">You can change this anytime</p>
+                    </div>
+                    <div class="avatar-grid" id="avatar-grid">
+                        <div class="avatar-option selected" data-avatar="Hero"><div class="avatar-circle">🦸‍♀️</div><div class="avatar-name">Hero</div></div>
+                        <div class="avatar-option" data-avatar="Kitty"><div class="avatar-circle">🐱</div><div class="avatar-name">Kitty</div></div>
+                        <div class="avatar-option" data-avatar="Space"><div class="avatar-circle">🚀</div><div class="avatar-name">Space</div></div>
+                        <div class="avatar-option" data-avatar="Rainbow"><div class="avatar-circle">🌈</div><div class="avatar-name">Rainbow</div></div>
+                        <div class="avatar-option" data-avatar="Unicorn"><div class="avatar-circle">🦄</div><div class="avatar-name">Unicorn</div></div>
+                        <div class="avatar-option" data-avatar="Dragon"><div class="avatar-circle">🐉</div><div class="avatar-name">Dragon</div></div>
+                    </div>
+                    <div class="card" id="avatar-preview" style="background:#e6fffa;border-color:#4fd1c7;text-align:center;">
+                        <div style="font-size:40px;margin-bottom:10px;" id="avatar-emoji">🦸‍♀️</div>
+                        <div style="font-weight:bold;color:#2c7a7b;" id="avatar-label">You chose Hero!</div>
+                        <div style="font-size:10px;color:#2c7a7b;margin-top:5px;" id="avatar-desc">Ready to learn and grow strong!</div>
+                    </div>
+                    <button class="btn" id="btn-avatar-next">Let's Start Learning!</button>
+                </div>
+            </div>
+        </div>
+        <!-- Home Dashboard -->
+        <div class="app-screen" id="screen-home">
+            <div class="screen">
+                <div class="header">
+                    <div class="logo">Lumii</div>
+                    <div style="flex:1;text-align:center;">
+                        <div style="font-weight:bold;color:#2d3748;" id="welcome-name">Hi! 👋</div>
+                        <div style="font-size:10px;color:#718096;">Ready to learn?</div>
+                    </div>
+                    <div class="profile-icon" id="profile-emoji">🦸‍♀️</div>
+                </div>
+                <div class="content-area">
+                    <div class="card card-large" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;">
+                        <div>
+                            <div style="font-weight:bold;margin-bottom:5px;">Today's Goal</div>
+                            <div style="font-size:10px;opacity:.9;">Complete 3 lessons</div>
+                            <div class="progress-bar" style="background:rgba(255,255,255,0.3);">
+                                <div class="progress-fill" style="background:white;width:33%;"></div>
+                            </div>
+                        </div>
+                        <div style="font-size:20px;">🎯</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Quick Actions</div>
+                        <button class="btn" id="btn-curriculum-assessment">🧠 Take Curriculum Assessment</button>
+                        <button class="btn btn-secondary">💬 Chat with Lumii AI</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Subjects</div>
+                        <div style="display:flex;gap:16px;">
+                            <div class="btn btn-secondary subject-btn" data-subject="math">Math</div>
+                            <div class="btn btn-secondary subject-btn" data-subject="geography">Geography</div>
+                            <div class="btn btn-secondary subject-btn" data-subject="spelling">Spelling</div>
+                            <div class="btn btn-secondary subject-btn" data-subject="wellbeing">Wellbeing</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-nav">
+                    <div class="nav-item active">Home</div>
+                    <div class="nav-item learn-btn">Learn</div>
+                    <div class="nav-item wellbeing-btn">Wellbeing</div>
+                    <div class="nav-item">Progress</div>
+                </div>
+            </div>
+        </div>
+        <!-- Gap Analysis -->
+        <div class="app-screen" id="screen-gap">
+            <div class="screen">
+                <div class="header">
+                    <div style="font-weight:bold;">📊 Gap Analysis</div>
+                    <div class="profile-icon" id="profile-emoji-gap">🦸‍♀️</div>
+                </div>
+                <div class="content-area">
+                    <div class="card" style="text-align:center;background:#edf2f7;">
+                        <div style="font-weight:bold;margin-bottom:10px;">Assessment Results</div>
+                        <div style="font-size:10px;color:#718096;margin-bottom:15px;">Based on your recent performance</div>
+                        <div style="margin:15px 0;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;">
+                                <span style="font-size:11px;">Fractions</span>
+                                <div style="width:60%;background:#e2e8f0;height:6px;border-radius:3px;">
+                                    <div style="width:30%;height:100%;background:#f56565;border-radius:3px;"></div>
+                                </div>
+                                <span style="font-size:10px;color:#e53e3e;">Needs Work</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;">
+                                <span style="font-size:11px;">Multiplication</span>
+                                <div style="width:60%;background:#e2e8f0;height:6px;border-radius:3px;">
+                                    <div style="width:70%;height:100%;background:#ed8936;border-radius:3px;"></div>
+                                </div>
+                                <span style="font-size:10px;color:#dd6b20;">Improving</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;">
+                                <span style="font-size:11px;">Addition</span>
+                                <div style="width:60%;background:#e2e8f0;height:6px;border-radius:3px;">
+                                    <div style="width:90%;height:100%;background:#48bb78;border-radius:3px;"></div>
+                                </div>
+                                <span style="font-size:10px;color:#38a169;">Strong</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">📚 Recommended Focus Areas</div>
+                        <div class="card-small" style="margin:8px 0;background:#fed7d7;">
+                            <div class="card-icon" style="background:#f56565;"></div>
+                            <div class="card-text">
+                                <div class="card-title">Fractions Basics</div>
+                                <div>Start with simple fractions</div>
+                            </div>
+                        </div>
+                        <div class="card-small" style="margin:8px 0;background:#feebc8;">
+                            <div class="card-icon" style="background:#ed8936;"></div>
+                            <div class="card-text">
+                                <div class="card-title">Times Tables</div>
+                                <div>Practice 6-9 multiplication</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn" id="btn-start-learning-path">Start Personalized Learning Path</button>
+                </div>
+                <div class="bottom-nav">
+                    <div class="nav-item" id="nav-home-gap">Home</div>
+                    <div class="nav-item learn-btn">Learn</div>
+                    <div class="nav-item wellbeing-btn">Wellbeing</div>
+                    <div class="nav-item">Progress</div>
+                </div>
+            </div>
+        </div>
+        <!-- AI Tutor Math -->
+        <div class="app-screen" id="screen-tutor">
+            <div class="screen">
+                <div class="header">
+                    <div style="font-weight:bold;">🤖 AI Tutor - Math</div>
+                    <div class="profile-icon" id="profile-emoji-tutor">🦸‍♀️</div>
+                </div>
+                <div class="content-area">
+                    <div style="background:#edf2f7;border-radius:12px;padding:15px;margin-bottom:15px;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="width:30px;height:30px;background:#667eea;border-radius:50%;margin-right:10px;"></div>
+                            <div style="font-weight:bold;font-size:12px;">Lumii AI</div>
+                        </div>
+                        <div style="font-size:11px;color:#4a5568;">
+                            Hi! Let's work on fractions today. Can you tell me what 1/2 + 1/4 equals?
+                        </div>
+                    </div>
+                    <div style="background:#667eea;color:white;border-radius:12px;padding:15px;margin-bottom:15px;margin-left:20px;">
+                        <div style="font-size:11px;">I think it's 2/6?</div>
+                    </div>
+                    <div style="background:#edf2f7;border-radius:12px;padding:15px;margin-bottom:15px;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="width:30px;height:30px;background:#667eea;border-radius:50%;margin-right:10px;"></div>
+                            <div style="font-weight:bold;font-size:12px;">Lumii AI</div>
+                        </div>
+                        <div style="font-size:11px;color:#4a5568;margin-bottom:10px;">
+                            Good try! Let me show you another way to think about it.
+                        </div>
+                        <div style="background:white;border:2px solid #e2e8f0;border-radius:8px;padding:10px;text-align:center;">
+                            <div style="font-size:16px;margin-bottom:5px;">🍕</div>
+                            <div style="font-size:10px;">What if we had 4 equal pizza slices?</div>
+                        </div>
+                    </div>
+                    <div style="background:#667eea;color:white;border-radius:12px;padding:15px;margin-bottom:15px;margin-left:20px;">
+                        <div style="font-size:11px;">Um... 3/4?</div>
+                    </div>
+                    <div style="background:#fef5e7;border:2px solid #f6ad55;border-radius:12px;padding:15px;margin-bottom:15px;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="width:30px;height:30px;background:#667eea;border-radius:50%;margin-right:10px;"></div>
+                            <div style="font-weight:bold;font-size:12px;">Lumii AI</div>
+                            <div style="margin-left:auto;font-size:16px;">🌸</div>
+                        </div>
+                        <div style="font-size:11px;color:#744210;margin-bottom:10px;">
+                            I can see you're working hard! Sometimes our brains need a little break. Should we pause and do a fun breathing exercise together? It might help us think more clearly!
+                        </div>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <button class="btn" id="btn-breathe-from-tutor" style="flex:1;background:#48bb78;font-size:12px;">Yes, let's breathe!</button>
+                            <button class="btn btn-secondary" style="flex:1;font-size:12px;">Keep trying</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-nav">
+                    <div class="nav-item" id="nav-home-tutor">Home</div>
+                    <div class="nav-item learn-btn active">Learn</div>
+                    <div class="nav-item wellbeing-btn">Wellbeing</div>
+                    <div class="nav-item">Progress</div>
+                </div>
+            </div>
+        </div>
+        <!-- Wellbeing Check-in -->
+        <div class="app-screen" id="screen-wellbeing">
+            <div class="screen">
+                <div class="header">
+                    <div style="font-weight:bold;">💙 Wellbeing Check-in</div>
+                    <div class="profile-icon"></div>
+                </div>
+                <div class="content-area">
+                    <div class="card" style="text-align:center;">
+                        <div style="font-weight:bold;margin-bottom:15px;">How are you feeling today?</div>
+                        <div class="mood-selector" id="mood-selector">
+                            <div class="mood-option">😢</div>
+                            <div class="mood-option">😕</div>
+                            <div class="mood-option selected">😊</div>
+                            <div class="mood-option">😄</div>
+                            <div class="mood-option">🤩</div>
+                        </div>
+                        <div style="font-size:10px;color:#718096;margin-top:10px;">Tap to select your mood</div>
+                    </div>
+                    <div class="card">
+                        <div style="font-weight:bold;margin-bottom:10px;">Energy Level</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:75%;background:#ed8936;"></div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;font-size:9px;color:#718096;margin-top:5px;">
+                            <span>Low</span><span>High</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="font-weight:bold;margin-bottom:10px;">How was school today?</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                            <button class="btn btn-secondary" style="padding:8px;font-size:10px;">😊 Great</button>
+                            <button class="btn btn-secondary" style="padding:8px;font-size:10px;">😐 Okay</button>
+                            <button class="btn" style="padding:8px;font-size:10px;">😟 Tough</button>
+                            <button class="btn btn-secondary" style="padding:8px;font-size:10px;">😴 Boring</button>
+                        </div>
+                    </div>
+                    <div class="card" style="background:#e6fffa;border-color:#4fd1c7;">
+                        <div style="text-align:center;">
+                            <div style="font-weight:bold;margin-bottom:5px;">🌸 Take a Breathing Break</div>
+                            <div style="font-size:10px;color:#2c7a7b;margin-bottom:10px;">Let's do some calm breathing together</div>
+                            <button class="btn" id="btn-breathing-break" style="background:#319795;">Start 2-Minute Exercise</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-nav">
+                    <div class="nav-item" id="nav-home-wellbeing">Home</div>
+                    <div class="nav-item learn-btn">Learn</div>
+                    <div class="nav-item wellbeing-btn active">Wellbeing</div>
+                    <div class="nav-item">Progress</div>
+                </div>
+            </div>
+        </div>
+        <!-- Breathing Exercise -->
+        <div class="app-screen" id="screen-breathing">
+            <div class="screen">
+                <div class="screen-title">🌸 Breathing Exercise</div>
+                <div class="content-area" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                    <div style="width:180px;height:180px;border-radius:50%;border:4px solid #667eea;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:24px;color:#4a5568;text-align:center;margin:40px 0;">
+                        Breathe in...<br>Breathe out...
+                    </div>
+                    <div style="font-size:16px;font-weight:bold;color:#2d3748;margin-bottom:10px;text-align:center;">
+                        Let's relax for 2 minutes!
+                    </div>
+                    <button class="btn" id="btn-breathing-done" style="background:#48bb78;font-size:14px;">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Helper: show screen by ID, update nav highlights
+    function showScreen(screenId) {
+        document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    // Welcome -> Avatar selection
+    document.getElementById('btn-next-onboarding').onclick = function() {
+        const name = document.getElementById('input-name').value.trim();
+        const grade = document.getElementById('input-grade').value;
+        if (!name) { alert('Please enter your name!'); return; }
+        if (!grade) { alert('Please select your grade!'); return; }
+        showScreen('screen-avatar');
+    };
+
+    // Avatar selection logic
+    const avatarOptions = document.querySelectorAll('#avatar-grid .avatar-option');
+    const avatarPreviewEmoji = document.getElementById('avatar-emoji');
+    const avatarLabel = document.getElementById('avatar-label');
+    const avatarDesc = document.getElementById('avatar-desc');
+    let chosenAvatar = "Hero";
+    const avatarDescriptions = {
+        "Hero": "Ready to learn and grow strong!",
+        "Kitty": "Curious and quick to learn!",
+        "Space": "Ready to explore new worlds!",
+        "Rainbow": "Colorful and positive learning!",
+        "Unicorn": "Magical journeys ahead!",
+        "Dragon": "Brave and wise learning!"
+    };
+    avatarOptions.forEach(option => {
+        option.onclick = function() {
+            avatarOptions.forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            const emoji = this.querySelector('.avatar-circle').textContent;
+            const name = this.querySelector('.avatar-name').textContent;
+            avatarPreviewEmoji.textContent = emoji;
+            avatarLabel.textContent = `You chose ${name}!`;
+            avatarDesc.textContent = avatarDescriptions[name] || "";
+            chosenAvatar = name;
+        }
+    });
+    // Next from avatar selection to home
+    document.getElementById('btn-avatar-next').onclick = function() {
+        // Set name and avatar on dashboard
+        const inputName = document.getElementById('input-name').value.trim();
+        document.getElementById('welcome-name').textContent = `Hi, ${inputName}! 👋`;
+        // Set avatar on all profile icons
+        document.querySelectorAll('#profile-emoji, #profile-emoji-gap, #profile-emoji-tutor').forEach(el => {
+            el.textContent = avatarOptions[chosenAvatar] ?
+                avatarOptions[chosenAvatar].querySelector('.avatar-circle').textContent :
+                document.querySelector('.avatar-option.selected .avatar-circle').textContent;
+        });
+        // If user selected, update profile emoji everywhere
+        document.querySelectorAll('#profile-emoji, #profile-emoji-gap, #profile-emoji-tutor').forEach(el=>{
+            el.textContent = document.querySelector('.avatar-option.selected .avatar-circle').textContent;
+        });
+        showScreen('screen-home');
+    };
+
+    // Quick Actions: Take Curriculum Assessment
+    document.getElementById('btn-curriculum-assessment').onclick = function() {
+        showScreen('screen-gap');
+    };
+    // Start Personalized Learning Path from Gap
+    document.getElementById('btn-start-learning-path').onclick = function() {
+        showScreen('screen-tutor');
+    };
+
+    // Subject and Learn buttons
+    document.querySelectorAll('.subject-btn, .learn-btn').forEach(btn => {
+        btn.onclick = function() { showScreen('screen-tutor'); }
+    });
+
+    // Wellbeing nav/button
+    document.querySelectorAll('.wellbeing-btn').forEach(btn => {
+        btn.onclick = function() { showScreen('screen-wellbeing'); }
+    });
+
+    // Home navs
+    document.getElementById('nav-home-gap').onclick = function() { showScreen('screen-home'); };
+    document.getElementById('nav-home-tutor').onclick = function() { showScreen('screen-home'); };
+    document.getElementById('nav-home-wellbeing').onclick = function() { showScreen('screen-home'); };
+
+    // Wellbeing: Take a Breathing Break
+    document.getElementById('btn-breathing-break').onclick = function() { showScreen('screen-breathing'); };
+    document.getElementById('btn-breathe-from-tutor').onclick = function() { showScreen('screen-breathing'); };
+
+    // Done breathing returns to wellbeing
+    document.getElementById('btn-breathing-done').onclick = function() { showScreen('screen-wellbeing'); };
+
+    // Mood selection
+    document.querySelectorAll('.mood-option').forEach(btn=>{
+        btn.onclick = function() {
+            btn.parentElement.querySelectorAll('.mood-option').forEach(opt=>opt.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+    });
+
+    // Fix: dynamically render Year 1 - Year 12 in dropdown (if not using template literal above)
+    (function(){
+        const gradeSel = document.getElementById('input-grade');
+        if(gradeSel && gradeSel.options.length < 13) {
+            for(let i=1;i<=12;i++) {
+                const o=document.createElement('option'); o.textContent='Year '+i; o.value='Year '+i;
+                gradeSel.appendChild(o);
+            }
+        }
+    })();
+</script>
+</body>
+</html>
