@@ -2,18 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lumii AI - Clickable Wireframes (Simple Flow)</title>
+  <title>Lumii AI - Clickable Wireframes (Full Flow)</title>
   <meta name="viewport" content="width=375, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
-    body {
+    html, body {
       background: #f5f7fa;
       margin: 0;
       padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+    body {
+      min-height: 100vh;
       font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
     }
     .container {
       background: #fff;
@@ -23,14 +29,19 @@
       width: 100%;
       max-width: 410px;
       min-height: 640px;
-      margin: 24px auto;
+      margin: 24px auto 24px auto;
       position: relative;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
-    @media (max-width: 440px) {
-      .container { margin: 0; border-radius: 0; min-height: 100vh; max-width: 100vw; }
+    @media (max-width: 430px) {
+      .container {
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+        max-width: 100vw;
+      }
     }
     .screen {
       width: 100%;
@@ -47,7 +58,7 @@
       font-weight: bold;
       font-size: 22px;
       color: #2d3748;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
       text-align: center;
       padding-bottom: 10px;
       border-bottom: 2px solid #e2e8f0;
@@ -58,11 +69,12 @@
     .content-area {
       flex: 1;
       overflow-y: auto;
-      padding: 30px 20px 20px 20px;
+      padding: 16px 14px 12px 14px;
       display: flex;
       flex-direction: column;
       align-items: stretch;
       position: relative;
+      min-height: 0;
     }
     .btn, button.btn {
       background: #667eea;
@@ -105,7 +117,7 @@
     /* Nav */
     .bottom-nav {
       position: absolute;
-      left: 14px; right: 14px; bottom: 10px;
+      left: 12px; right: 12px; bottom: 10px;
       height: 56px;
       background: #f7fafc;
       border-radius: 15px;
@@ -114,6 +126,8 @@
       justify-content: space-around;
       align-items: center;
       z-index: 10;
+      max-width: 386px;
+      margin: 0 auto;
     }
     .nav-item {
       width: 50px; height: 40px;
@@ -171,9 +185,70 @@
       border-radius: 12px;
       padding: 14px 15px;
       margin-bottom: 18px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     ul { margin: 0; padding-left: 22px; }
     .card-title { font-weight: 600; margin-bottom: 7px; font-size: 17px;}
+    .wellbeing-companion {
+      background: #e6fffa;
+      border: 2px solid #4fd1c7;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 18px;
+      color: #285e61;
+    }
+    .companion-avatar {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .companion-btn-row {
+      display: flex;
+      gap: 7px;
+      margin-top: 12px;
+      justify-content: center;
+    }
+    /* Parent expansion */
+    .parent-section-title {
+      color: #4a5568;
+      font-weight: bold;
+      font-size: 18px;
+      margin: 16px 0 8px 0;
+      text-align: left;
+    }
+    .parent-card {
+      background: #f2eafc;
+      border: 2px solid #d6bcfa;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: #44337a;
+    }
+    .parent-btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      justify-content: center;
+    }
+    .parent-link {
+      color: #667eea;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 15px;
+      margin-left: 2px;
+    }
+    /* Fix for content overflow and nav */
+    .screen {min-height: 640px; box-sizing: border-box;}
+    .content-area {margin-bottom: 72px;}
+    @media (max-width: 430px) {
+      .container { border-radius:0; }
+      .card { padding: 11px 6px 12px 6px; }
+      .bottom-nav { left: 2vw; right: 2vw; }
+      .content-area { padding: 14px 2vw 10px 2vw;}
+      .floating-avatar { right:8px; }
+    }
   </style>
 </head>
 <body>
@@ -188,7 +263,7 @@
     </div>
   </div>
 
-  <!-- 2. Parent Dashboard -->
+  <!-- 2. Parent Dashboard (Expanded) -->
   <div id="screen-parent" class="screen">
     <div class="screen-title">Parent Dashboard</div>
     <div class="content-area">
@@ -209,6 +284,7 @@
         <ul>
           <li>Ask how they're feeling after school</li>
           <li>Practice a 2-min breathing break together</li>
+          <li>Discuss their favourite part of the day</li>
         </ul>
       </div>
       <div class="card">
@@ -216,10 +292,23 @@
         <ul>
           <li>Math Test: June 21</li>
           <li>Science Project Due: June 28</li>
+          <li>School Trip: July 3</li>
         </ul>
       </div>
-      <button class="btn" style="margin-top:16px;">Upload Materials</button>
-      <button class="btn btn-secondary" onclick="showScreen('screen-role')">Back</button>
+      <div class="parent-section-title">Messages</div>
+      <div class="parent-card">
+        <b>From Lumii AI:</b><br>
+        Your child showed improvement in multiplication! Encourage them to keep practicing.
+      </div>
+      <div class="parent-section-title">Resources</div>
+      <div class="parent-card">
+        <div>🔗 <span class="parent-link" onclick="window.open('https://www.khanacademy.org/math', '_blank')">Khan Academy Math</span></div>
+        <div>🔗 <span class="parent-link" onclick="window.open('https://www.storyberries.com/', '_blank')">Free Storybooks</span></div>
+      </div>
+      <div class="parent-btn-row">
+        <button class="btn" style="width:48%;">Upload Materials</button>
+        <button class="btn btn-secondary" style="width:48%;" onclick="showScreen('screen-role')">Back</button>
+      </div>
     </div>
   </div>
 
@@ -315,10 +404,17 @@
       <div class="card">
         <div class="card-title">Weekly Plan</div>
         <ul>
-          <li>Mon: Math, Spelling</li>
-          <li>Tue: Geography, Math</li>
-          <li>Wed: Science, Reading</li>
+          <li>Mon: Math, Spelling, Mindful Moments</li>
+          <li>Tue: Geography, Math, Breathing Exercise</li>
+          <li>Wed: Science, Reading, Wellbeing check</li>
+          <li>Thu: Math Review, Art, Mindfulness</li>
+          <li>Fri: Fun Quiz, Show & Tell, Celebration!</li>
         </ul>
+      </div>
+      <div class="wellbeing-companion" onclick="showScreen('screen-wellbeing-companion')" style="cursor:pointer;">
+        <div class="companion-avatar">🌸</div>
+        <div><b>Meet your Wellbeing Companion!</b><br>
+        Tap here anytime for a positive break, encouragement, or tips for feeling your best.</div>
       </div>
     </div>
     <div class="bottom-nav">
@@ -328,6 +424,27 @@
       <div class="nav-item" onclick="showScreen('screen-kid-gap')">Progress</div>
     </div>
     <div id="floating-avatar" class="floating-avatar" title="Need a break?">🦸‍♀️</div>
+  </div>
+
+  <!-- 6b. Wellbeing Companion Modal -->
+  <div id="screen-wellbeing-companion" class="screen">
+    <div class="screen-title">🌸 Wellbeing Companion</div>
+    <div class="content-area" style="align-items:center;justify-content:center;flex:1;">
+      <div class="companion-avatar">🌸</div>
+      <div style="font-size:18px;font-weight:bold;margin-bottom:8px;">Hi, I'm your Wellbeing Buddy!</div>
+      <div style="margin-bottom:12px;">I'm here if you ever want to:</div>
+      <ul style="font-size:16px;margin-bottom:16px;text-align:left;">
+        <li>Take a calming breathing break</li>
+        <li>Get encouragement and positive messages</li>
+        <li>Check in about your mood</li>
+        <li>Try a quick stretch or mindfulness activity</li>
+      </ul>
+      <div class="companion-btn-row">
+        <button class="btn" style="width:45%;" onclick="showScreen('screen-kid-breathing')">🌬️ Breathe</button>
+        <button class="btn btn-secondary" style="width:45%;" onclick="alert('You are awesome! Keep going! 😊')">💌 Encourage Me</button>
+      </div>
+      <button class="btn btn-secondary" style="margin-top:18px;" onclick="showScreen('screen-kid-home')">Back to Home</button>
+    </div>
   </div>
 
   <!-- 7. Gap Analysis -->
@@ -422,9 +539,19 @@
           <span>Low</span><span>High</span>
         </div>
       </div>
+      <div class="card">
+        <div style="font-weight:bold;margin-bottom:10px;">How was school today?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="btn btn-secondary" style="padding:8px;font-size:13px;">😊 Great</button>
+          <button class="btn btn-secondary" style="padding:8px;font-size:13px;">😐 Okay</button>
+          <button class="btn" style="padding:8px;font-size:13px;">😟 Tough</button>
+          <button class="btn btn-secondary" style="padding:8px;font-size:13px;">😴 Boring</button>
+        </div>
+      </div>
       <div class="card" style="background:#e6fffa;border-color:#4fd1c7;">
         <div style="text-align:center;">
           <div style="font-weight:bold;margin-bottom:5px;">🌸 Take a Breathing Break</div>
+          <div style="font-size:10px;color:#2c7a7b;margin-bottom:10px;">Let's do some calm breathing together</div>
           <button class="btn" id="btn-breathing-break" style="background:#319795;">Start 2-Minute Exercise</button>
         </div>
       </div>
@@ -549,6 +676,9 @@
       btn.classList.add('selected');
     }
   });
+
+  // Wellbeing Companion
+  // Click handled in Home via companion card's onclick
 
   // HANGMAN GAME: word is SPELLING, reveal S and L at start
   const hangmanWord = "SPELLING";
