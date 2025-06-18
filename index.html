@@ -75,6 +75,8 @@
       align-items: stretch;
       position: relative;
       min-height: 0;
+      margin-bottom: 72px;
+      box-sizing: border-box;
     }
     .btn, button.btn {
       background: #667eea;
@@ -190,6 +192,52 @@
     }
     ul { margin: 0; padding-left: 22px; }
     .card-title { font-weight: 600; margin-bottom: 7px; font-size: 17px;}
+    .parent-section-title {
+      color: #4a5568;
+      font-weight: bold;
+      font-size: 18px;
+      margin: 16px 0 8px 0;
+      text-align: left;
+    }
+    .parent-card {
+      background: #f2eafc;
+      border: 2px solid #d6bcfa;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: #44337a;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .parent-card:hover { background: #e9d8fd; }
+    .parent-btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      justify-content: center;
+    }
+    .parent-link {
+      color: #667eea;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 15px;
+      margin-left: 2px;
+    }
+    .parent-detail-section {
+      background: #f7fafc;
+      border: 2px solid #b2f5ea;
+      border-radius: 10px;
+      padding: 12px 13px;
+      margin-bottom: 14px;
+      font-size: 15px;
+      color: #234e52;
+    }
+    .parent-detail-title {
+      font-weight: bold;
+      color: #285e61;
+      margin-bottom: 7px;
+    }
     .wellbeing-companion {
       background: #e6fffa;
       border: 2px solid #4fd1c7;
@@ -209,39 +257,6 @@
       margin-top: 12px;
       justify-content: center;
     }
-    /* Parent expansion */
-    .parent-section-title {
-      color: #4a5568;
-      font-weight: bold;
-      font-size: 18px;
-      margin: 16px 0 8px 0;
-      text-align: left;
-    }
-    .parent-card {
-      background: #f2eafc;
-      border: 2px solid #d6bcfa;
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      font-size: 15px;
-      color: #44337a;
-    }
-    .parent-btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-      justify-content: center;
-    }
-    .parent-link {
-      color: #667eea;
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: 15px;
-      margin-left: 2px;
-    }
-    /* Fix for content overflow and nav */
-    .screen {min-height: 640px; box-sizing: border-box;}
-    .content-area {margin-bottom: 72px;}
     @media (max-width: 430px) {
       .container { border-radius:0; }
       .card { padding: 11px 6px 12px 6px; }
@@ -263,15 +278,15 @@
     </div>
   </div>
 
-  <!-- 2. Parent Dashboard (Expanded) -->
+  <!-- 2. Parent Dashboard (Expanded & Clickable) -->
   <div id="screen-parent" class="screen">
     <div class="screen-title">Parent Dashboard</div>
     <div class="content-area">
-      <div class="card">
+      <div class="card parent-card" onclick="showScreen('screen-parent-progress')">
         <div class="card-title">Weekly Progress</div>
-        <div>[Progress Chart Placeholder]</div>
+        <div>[Chart and overview]</div>
       </div>
-      <div class="card">
+      <div class="card parent-card" onclick="showScreen('screen-parent-learning')">
         <div class="card-title">Learning Suggestions</div>
         <ul>
           <li>Review multiplication tables</li>
@@ -279,7 +294,7 @@
           <li>Check homework completion</li>
         </ul>
       </div>
-      <div class="card">
+      <div class="card parent-card" onclick="showScreen('screen-parent-wellbeing')">
         <div class="card-title">Wellbeing Suggestions</div>
         <ul>
           <li>Ask how they're feeling after school</li>
@@ -287,7 +302,7 @@
           <li>Discuss their favourite part of the day</li>
         </ul>
       </div>
-      <div class="card">
+      <div class="card parent-card" onclick="showScreen('screen-parent-dates')">
         <div class="card-title">Important Dates</div>
         <ul>
           <li>Math Test: June 21</li>
@@ -296,18 +311,110 @@
         </ul>
       </div>
       <div class="parent-section-title">Messages</div>
-      <div class="parent-card">
+      <div class="parent-card" onclick="showScreen('screen-parent-messages')">
         <b>From Lumii AI:</b><br>
         Your child showed improvement in multiplication! Encourage them to keep practicing.
       </div>
       <div class="parent-section-title">Resources</div>
-      <div class="parent-card">
-        <div>🔗 <span class="parent-link" onclick="window.open('https://www.khanacademy.org/math', '_blank')">Khan Academy Math</span></div>
-        <div>🔗 <span class="parent-link" onclick="window.open('https://www.storyberries.com/', '_blank')">Free Storybooks</span></div>
+      <div class="parent-card" onclick="showScreen('screen-parent-resources')">
+        <div>🔗 <span class="parent-link">Khan Academy Math</span></div>
+        <div>🔗 <span class="parent-link">Free Storybooks</span></div>
       </div>
       <div class="parent-btn-row">
         <button class="btn" style="width:48%;">Upload Materials</button>
         <button class="btn btn-secondary" style="width:48%;" onclick="showScreen('screen-role')">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parent Details Screens -->
+  <div id="screen-parent-progress" class="screen">
+    <div class="screen-title">Weekly Progress</div>
+    <div class="content-area">
+      <div class="parent-detail-section">
+        <div class="parent-detail-title">Math</div>
+        <div>Excellent progress in multiplication and fractions. Needs more focus on word problems.</div>
+      </div>
+      <div class="parent-detail-section">
+        <div class="parent-detail-title">Spelling</div>
+        <div>Consistently completes spelling quizzes with high accuracy.</div>
+      </div>
+      <div class="parent-btn-row">
+        <button class="btn btn-secondary" onclick="showScreen('screen-parent')">Back</button>
+      </div>
+    </div>
+  </div>
+  <div id="screen-parent-learning" class="screen">
+    <div class="screen-title">Learning Suggestions</div>
+    <div class="content-area">
+      <div class="parent-detail-section">
+        <ul>
+          <li>Practice times tables (6-9)</li>
+          <li>Read for 15 minutes daily</li>
+          <li>Discuss today's lesson topics at dinner</li>
+        </ul>
+      </div>
+      <div class="parent-btn-row">
+        <button class="btn btn-secondary" onclick="showScreen('screen-parent')">Back</button>
+      </div>
+    </div>
+  </div>
+  <div id="screen-parent-wellbeing" class="screen">
+    <div class="screen-title">Wellbeing Suggestions</div>
+    <div class="content-area">
+      <div class="parent-detail-section">
+        <ul>
+          <li>Ask about their favourite part of the day</li>
+          <li>Spend 2 minutes doing slow breathing together</li>
+          <li>Notice if your child seems tired or frustrated</li>
+        </ul>
+      </div>
+      <div class="parent-btn-row">
+        <button class="btn btn-secondary" onclick="showScreen('screen-parent')">Back</button>
+      </div>
+    </div>
+  </div>
+  <div id="screen-parent-dates" class="screen">
+    <div class="screen-title">Important Dates</div>
+    <div class="content-area">
+      <div class="parent-detail-section">
+        <ul>
+          <li>Math Test: June 21 (practice review June 19)</li>
+          <li>Science Project Due: June 28 (plan together June 23)</li>
+          <li>School Trip: July 3 (return permission slip by June 25)</li>
+        </ul>
+      </div>
+      <div class="parent-btn-row">
+        <button class="btn btn-secondary" onclick="showScreen('screen-parent')">Back</button>
+      </div>
+    </div>
+  </div>
+  <div id="screen-parent-messages" class="screen">
+    <div class="screen-title">Messages from Lumii AI</div>
+    <div class="content-area">
+      <div class="parent-detail-section">
+        <div class="parent-detail-title">Progress Update</div>
+        Your child is showing more focus in math. Encourage regular breaks and positive feedback!
+      </div>
+      <div class="parent-detail-section">
+        <div class="parent-detail-title">Wellbeing Check</div>
+        Your child reported feeling "😊" today. Great job supporting their wellbeing!
+      </div>
+      <div class="parent-btn-row">
+        <button class="btn btn-secondary" onclick="showScreen('screen-parent')">Back</button>
+      </div>
+    </div>
+  </div>
+  <div id="screen-parent-resources" class="screen">
+    <div class="screen-title">Parent Resources</div>
+    <div class="content-area">
+      <div class="parent-detail-section">
+        <div>🔗 <a href="https://www.khanacademy.org/math" target="_blank" style="color:#667eea;">Khan Academy Math</a></div>
+        <div>🔗 <a href="https://www.storyberries.com/" target="_blank" style="color:#667eea;">Free Storybooks</a></div>
+        <div>🔗 <a href="https://www.childline.org.uk/toolbox/calm-zone/" target="_blank" style="color:#667eea;">Calm Zone (for kids)</a></div>
+      </div>
+      <div class="parent-btn-row">
+        <button class="btn btn-secondary" onclick="showScreen('screen-parent')">Back</button>
       </div>
     </div>
   </div>
@@ -595,15 +702,11 @@
       let av = document.getElementById(aid);
       if(av) av.classList.remove('hide');
     }
-    // Hangman auto-start if entering spelling
     if (id==="screen-kid-spelling") startHangman();
   }
-  // Role selector
   document.getElementById('btn-parent').onclick = () => showScreen('screen-parent');
   document.getElementById('btn-kid').onclick = () => showScreen('screen-kid-welcome');
-  // Welcome logo → onboarding
   document.getElementById('btn-to-onboarding').onclick = () => showScreen('screen-kid-onboarding');
-  // Onboarding Name/Grade
   let kidName = '';
   let chosenAvatar = 'Hero';
   let chosenAvatarEmoji = '🦸‍♀️';
@@ -617,7 +720,6 @@
     if (!grade) { alert('Please select your grade!'); return; }
     showScreen('screen-kid-avatar');
   };
-  // Avatar selection
   const avatarOptions = document.querySelectorAll('#avatar-grid .avatar-option');
   avatarOptions.forEach(option => {
     option.onclick = function() {
@@ -628,7 +730,6 @@
       document.getElementById('avatar-label').textContent = `You chose ${name}!`;
       chosenAvatar = name;
       chosenAvatarEmoji = avatarEmojis[name];
-      // Set all floating avatars
       document.querySelectorAll('.floating-avatar').forEach(el=>el.textContent=chosenAvatarEmoji);
     }
   });
@@ -636,27 +737,21 @@
     document.querySelectorAll('.floating-avatar').forEach(el=>el.textContent=chosenAvatarEmoji);
     showScreen('screen-kid-home');
   };
-  // Assessment button
   document.getElementById('btn-assessment').onclick = function() {
     showScreen('screen-kid-gap');
   };
-  // Gap: Start learning path
   document.getElementById('btn-start-learning-path').onclick = function() {
     showScreen('screen-kid-tutor');
   };
-  // Tutor: breathing break
   document.getElementById('btn-breathe-from-tutor').onclick = function() {
     showScreen('screen-kid-breathing');
   };
-  // Breathing: done returns to wellbeing
   document.getElementById('btn-breathing-done').onclick = function() {
     showScreen('screen-kid-wellbeing');
   };
-  // Wellbeing: breathing break
   document.getElementById('btn-breathing-break').onclick = function() {
     showScreen('screen-kid-breathing');
   };
-  // Subject/learn buttons
   document.querySelectorAll('.subject-btn').forEach(btn => {
     btn.onclick = function() {
       const subject = btn.dataset.subject;
@@ -665,26 +760,19 @@
       else showScreen('screen-kid-tutor');
     };
   });
-  // Floating avatar click
   document.querySelectorAll('.floating-avatar').forEach(el => {
     el.onclick = () => showScreen('screen-kid-wellbeing');
   });
-  // Mood selector
   document.querySelectorAll('.mood-option').forEach(btn=>{
     btn.onclick = function() {
       btn.parentElement.querySelectorAll('.mood-option').forEach(opt=>opt.classList.remove('selected'));
       btn.classList.add('selected');
     }
   });
-
-  // Wellbeing Companion
-  // Click handled in Home via companion card's onclick
-
   // HANGMAN GAME: word is SPELLING, reveal S and L at start
   const hangmanWord = "SPELLING";
   let hangmanState = {};
   function startHangman() {
-    // Reveal S and all Ls
     let arr = [];
     for(let i=0;i<hangmanWord.length;i++){
       if(hangmanWord[i]==='S'||hangmanWord[i]==='L') arr[i]=hangmanWord[i];
